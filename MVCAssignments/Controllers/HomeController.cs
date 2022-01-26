@@ -31,60 +31,60 @@ namespace MVCAssignments.Controllers
 
         public IActionResult Projects()
         {
-            List<ProjectModel> projects = new List<ProjectModel>();
+            List<Project> projects = new List<Project>();
 
             #region load-projects
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Programming", 
                 "Calculator", 
                 "A basic console based calculator that handles basic mathematical operations:", 
                 "https://github.com/thosel/Calculator")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Programming",
                 "Hangman",
                 "A simple guessing game:",
                 "https://github.com/thosel/Hangman")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Advanced programming",
                 "Calculator - xUnit",
                 "xUnit tests for the basic console based calculator mentioned above:",
                 "https://github.com/thosel/Calculator/tree/optional-tasks")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Advanced programming",
                 "Vending machine",
                 "A simple vending machine:",
                 "https://github.com/thosel/VendingMachine")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Advanced programming",
                 "Todo it",
                 "Group assignment, 3 collaborators:",
                 "https://github.com/thosel/TodoIt")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Frontend",
                 "Frontend fundamentals",
                 "Assignment to build two basic HTML structured pages:",
                 "https://github.com/thosel/FrontendFundamentals/tree/optional-tasks")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Frontend",
                 "Introduction to Bootstrap",
                 "An assignment that is meant as an introduction to the use of Twitter Bootstrap:",
                 "https://github.com/thosel/IntroductionToBootstrap")
                 );
 
-            projects.Add(new ProjectModel(
+            projects.Add(new Project(
                 "Frontend",
                 "Sokoban",
                 "A simple JavaScript game:",

@@ -45,11 +45,14 @@
                     <li>
                         @Html.ActionLink("Projects", "Projects", "Home", null, new { @class = "nav-link" })
                     </li>
+                    <li>
+                        @Html.ActionLink("Fever check", "FeverCheck", "Doctor", null, new { @class = "nav-link" })
+                    </li>
                 </ul>
             </div>
         </nav>
     </header>
-    <main class="m-5">
+    <main class="container m-5">
         @RenderBody()
     </main>
     <footer class="bg-dark fixed-bottom text-center">

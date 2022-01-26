@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Fever check";
+}
+
+<h1>Fever check</h1>
+
+<h5>Select a temperature unit, enter your temperature and hit the submit button!</h5>
+
+<section>
+    <p>@ViewBag.Message</p>
+</section>
+
+<section class="row">
+    <form asp-route="feverCheck" method="post" class="col-8">
+        <div class="form-check">
+            <label class="form-check-label" for="celsius">
+                <input type="radio" class="form-check-input" id="celsius" name="temperatureUnit" value="celsius" checked>Celsius
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label" for="fahrenheit">
+                <input type="radio" class="form-check-input" id="fahrenheit" name="temperatureUnit" value="fahrenheit">Fahrenheit
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="temperature">Temperature:</label>
+            <input type="text" class="form-control" id="temperature" name="temperature">
+        </div>
+        <button type="submit"
+                class="form-control form-control-sm btn btn-success
+                        mb-2">
+            Submit
+        </button>
+        <button type="reset"
+                class="form-control form-control-sm btn btn-danger">
+            Reset
+        </button>
+    </form>
+</section>
