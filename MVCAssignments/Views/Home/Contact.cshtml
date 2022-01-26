@@ -6,12 +6,14 @@
 
 <section class="mb-4">
     <h4>Phone:</h4>
-    <p>+46 (0)70 - xxx xx xx</p>
+    <p>@ViewBag.Phone</p>
 </section>
 
 <section class="mb-4">
     <h4>Adress:</h4>
-    <p>Thosel Thoselsson<br />
-    Thoselgatan 37<br />
-    458 73 Thosellanda</p>
+    <p>
+        @ViewBag.FirstName @ViewBag.LastName<br />
+        @ViewBag.Street @ViewBag.StreetNumber<br />
+        @ViewBag.ZipCode @ViewBag.City
+    </p>
 </section>
