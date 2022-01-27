@@ -12,6 +12,8 @@ namespace MVCAssignments
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddHttpContextAccessor();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -25,6 +27,7 @@ namespace MVCAssignments
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -37,6 +40,12 @@ namespace MVCAssignments
                     name: "feverCheck",
                     pattern: "/FeverCheck",
                     defaults: new { controller = "Doctor", action = "FeverCheck" }
+                    );
+
+                endpoints.MapControllerRoute(
+                    name: "guessingGame",
+                    pattern: "/GuessingGame",
+                    defaults: new { controller = "Games", action = "GuessingGame" }
                     );
             });
         }

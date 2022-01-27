@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Guessing game";
+}
+
+<h1>Guessing game</h1>
+
+<section class="row">
+    <section class="col-8 mb-4">
+        <h5>Make a guess on a number in the interval between 1 and 100!</h5>
+
+        <section>
+            <p>@ViewBag.Number</p>
+        </section>
+
+        <section>
+            <p>@ViewBag.Message</p>
+        </section>
+
+        <form asp-route="guessingGame" method="post">
+            <div class="form-group">
+                <label for="number">Number:</label>
+                <input type="text" class="form-control" id="number" name="number" autofocus>
+            </div>
+            <button type="submit"
+                    class="form-control form-control-sm btn btn-success
+                        mb-2">
+                Submit
+            </button>
+            <button type="reset"
+                    class="form-control form-control-sm btn btn-danger">
+                Reset
+            </button>
+        </form>
+    </section>
+
+    <hr class="d-md-none" />
+
+    <article class="col-md-4 ps-4">
+        @if (!string.IsNullOrEmpty(Context.Request.Cookies["high-scores"]))
+        {
+            <h5>High scores - Top ten</h5>
+            <p>
+                @{
+                    List<string> highScores = Context.Request.Cookies["high-scores"].Split(',').ToList<string>();
+                    highScores = highScores.OrderBy(highScore => int.Parse(highScore.ToString())).ToList();
+
+                    int highScoreCounter = 1;
+
+                    foreach (var highScore in highScores)
+                    {
+                        <div>@highScoreCounter: @highScore guesses</div>
+                        highScoreCounter++;
+
+                        if (highScoreCounter > 10)
+                        {
+                            break;
+                        }
+                    }
+                }
+            </p>
+        }
+    </article>
+</section>
