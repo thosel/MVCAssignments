@@ -1,0 +1,109 @@
+﻿@model PeopleViewModel
+
+@{
+    ViewData["Title"] = "People";
+}
+
+<h1>People</h1>
+
+<section class="row">
+    <section class="col-8 mb-4">
+
+        @{if ((string)TempData["create-person"] == "success")
+            {
+                <div class="alert alert-success">
+                    <strong>A new person was created successfully!</strong>
+                </div>
+            }
+            else if ((string)TempData["create-person"] == "failure")
+            {
+                <div class="alert alert-danger">
+                    <strong>Failed to create a new person!</strong>
+                </div>
+            }
+        }
+
+        @{if ((string)TempData["delete-person"] == "success")
+            {
+                <div class="alert alert-success">
+                    <strong>The person was successfully deleted!</strong>
+                </div>
+            }
+            else if ((string)TempData["delete-person"] == "failure")
+            {
+                <div class="alert alert-danger">
+                    <strong>Failed to delete the person!</strong>
+                </div>
+            }
+        }
+
+        <form asp-controller="People" asp-action="GetPeople" method="post">
+            <div class="form-group">
+                <label for="search-text">Search text:</label>
+                <input type="text" class="form-control" id="search-text" name="searchString" autofocus>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true">
+                <label for="case-sensitive">Case sensitive</label>
+            </div>
+            <button type="submit"
+                    class="form-control form-control-sm btn btn-success mb-2">
+                Submit
+            </button>
+        </form>
+
+        <hr />
+
+        <form asp-controller="People" asp-action="CreatePerson" method="post">
+            <div class="form-group">
+                <label asp-for="CreatePersonViewModel.Name"></label>
+                <input asp-for="CreatePersonViewModel.Name" class="form-control" />
+                <span asp-validation-for="CreatePersonViewModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatePersonViewModel.Phone"></label>
+                <input asp-for="CreatePersonViewModel.Phone" class="form-control" />
+                <span asp-validation-for="CreatePersonViewModel.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatePersonViewModel.City"></label>
+                <input asp-for="CreatePersonViewModel.City" class="form-control" />
+                <span asp-validation-for="CreatePersonViewModel.City" class="text-danger"></span>
+            </div>
+            <button type="submit" class="form-control form-control-sm btn btn-success mb-2">
+                Submit
+            </button>
+            <button type="reset" class="form-control form-control-sm btn btn-danger">
+                Reset
+            </button>
+        </form>
+
+        <hr />
+    </section>
+    <section>
+        <table class="table table-striped table-hover table-responsive">
+            <tr>
+                <th class="pointer-cursor" onclick="sortTable(0)">Name</th>
+                <th>Phone</th>
+                <th class="pointer-cursor" onclick="sortTable(2)">City</th>
+                <th></th>
+            </tr>
+
+            @{
+                foreach (var person in Model.People)
+                {
+                    <tr>
+                        <td name="name">@person.Name</td>
+                        <td>@person.Phone</td>
+                        <td name="city">@person.City</td>
+                        <td>
+                            <a asp-controller="People" asp-action="DeletePerson" asp-route-id="@person.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </section>
+</section>
+
+<script src="~/js/sort-people-table.js" asp-append-version="true"></script>

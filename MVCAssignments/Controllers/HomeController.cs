@@ -36,9 +36,9 @@ namespace MVCAssignments.Controllers
             #region load-projects
 
             projects.Add(new Project(
-                "Programming", 
-                "Calculator", 
-                "A basic console based calculator that handles basic mathematical operations:", 
+                "Programming",
+                "Calculator",
+                "A basic console based calculator that handles basic mathematical operations:",
                 "https://github.com/thosel/Calculator")
                 );
 

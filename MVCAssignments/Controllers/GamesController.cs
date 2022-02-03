@@ -6,12 +6,12 @@ namespace MVCAssignments.Controllers
 {
     public class GamesController : Controller
     {
-        private Random random = new Random((int)DateTime.Now.Ticks);
+        private readonly Random random = new Random((int)DateTime.Now.Ticks);
 
         public IActionResult GuessingGame()
         {
-            initNumber();
-            initGuesses();
+            InitNumber();
+            InitGuesses();
 
             return View();
         }
@@ -19,9 +19,8 @@ namespace MVCAssignments.Controllers
         [HttpPost]
         public IActionResult GuessingGame(string number)
         {
-            int validNumber;
 
-            if (!int.TryParse(number, out validNumber))
+            if (!int.TryParse(number, out int validNumber))
             {
                 ViewBag.Message = "The entered number was not a valid one! Please try again!";
             }
@@ -31,7 +30,7 @@ namespace MVCAssignments.Controllers
             }
             else
             {
-                incrementGuesses();
+                IncrementGuesses();
                 string guesses = HttpContext.Session.GetString("guesses");
 
                 int sessionNumber = int.Parse(HttpContext.Session.GetString("number"));
@@ -46,19 +45,19 @@ namespace MVCAssignments.Controllers
                 }
                 else
                 {
-                    setHighScoresCookie();
+                    SetHighScoresCookie();
 
                     ViewBag.Message = $"Guess {guesses}: The entered number {validNumber} was correct! Please play again!";
 
-                    initNumber();
-                    initGuesses();
+                    InitNumber();
+                    InitGuesses();
                 }
             }
 
             return View();
         }
 
-        private void incrementGuesses()
+        private void IncrementGuesses()
         {
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString("guesses")))
             {
@@ -68,21 +67,21 @@ namespace MVCAssignments.Controllers
             }
             else
             {
-                initGuesses();
+                InitGuesses();
             }
         }
 
-        private void initGuesses()
+        private void InitGuesses()
         {
             HttpContext.Session.SetString("guesses", "0");
         }
 
-        private void initNumber()
+        private void InitNumber()
         {
             HttpContext.Session.SetString("number", $"{random.Next(1, 101)}");
         }
 
-        private void setHighScoresCookie()
+        private void SetHighScoresCookie()
         {
             if (!HttpContext.Request.Cookies.ContainsKey("high-scores"))
             {

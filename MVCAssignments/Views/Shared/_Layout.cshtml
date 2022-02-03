@@ -6,7 +6,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           rel="stylesheet" />
     <link href="~/css/theme/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
     <title>@ViewBag.Title</title>
 </head>
 <body>
@@ -50,6 +50,9 @@
                     </li>
                     <li>
                         @Html.ActionLink("Guessing game", "GuessingGame", "Games", null, new { @class = "nav-link" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("People", "GetPeople", "People", null, new { @class = "nav-link" })
                     </li>
                 </ul>
             </div>
