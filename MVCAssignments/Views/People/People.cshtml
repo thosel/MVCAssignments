@@ -93,9 +93,9 @@
                 foreach (var person in Model.People)
                 {
                     <tr>
-                        <td name="name">@person.Name</td>
+                        <td>@person.Name</td>
                         <td>@person.Phone</td>
-                        <td name="city">@person.City</td>
+                        <td>@person.City</td>
                         <td>
                             <a asp-controller="People" asp-action="DeletePerson" asp-route-id="@person.Id">Delete</a>
                         </td>
