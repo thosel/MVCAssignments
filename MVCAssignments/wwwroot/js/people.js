@@ -118,6 +118,8 @@ class People {
                         this.statusMessage = "Failed to delete the person!";
                         throw new Error();
                     } else {
+                        this.status = "success";
+                        this.statusMessage = "The person was deleted successfully!";
                         resolve();
                     }
                 })
