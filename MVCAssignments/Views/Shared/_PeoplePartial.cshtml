@@ -1,0 +1,27 @@
+﻿@model PeopleViewModel
+
+@{ if (Model.People.Count > 0)
+    {
+
+        <div class="row">
+            <div class="col-1">
+                <strong>Id</strong>
+            </div>
+            <div class="col">
+                <strong>Name</strong>
+            </div>
+        </div>
+
+        <hr />
+    }
+}
+
+@{
+    foreach (var person in @Model.People)
+    {
+        <div class="row">
+            <div class="col-1">@person.Id</div>
+            <div class="col">@person.Name</div>
+        </div>
+    }
+}

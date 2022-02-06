@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace MVCAssignments.Controllers
 {
-    public class PeopleController : Controller
+    public class PeopleAjaxController : Controller
     {
         private readonly PeopleViewModel peopleViewModel;
 
-        public PeopleController()
+        public PeopleAjaxController()
         {
             this.peopleViewModel = new PeopleViewModel();
             this.peopleViewModel.People = PeopleService.People;
@@ -44,33 +44,55 @@ namespace MVCAssignments.Controllers
                 }
             }
 
-            return View("/Views/People/People.cshtml", this.peopleViewModel);
+            return PartialView("_PeoplePartial", this.peopleViewModel);
         }
 
         [HttpPost]
-        public IActionResult CreatePerson(CreatePersonViewModel createPersonViewModel)
+        public IActionResult CreatePerson(string name, string phone, string city)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(city))
             {
-                Person person = new Person(
+                string nameValidationMessage = "";
+                string phoneValidationMessage = "";
+                string cityValidationMessage = "";
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    nameValidationMessage = "A name is required.";
+                }
+
+                if (string.IsNullOrEmpty(phone))
+                {
+                    phoneValidationMessage = "A phone number is required.";
+                }
+
+                if (string.IsNullOrEmpty(city))
+                {
+                    cityValidationMessage = "A city is required.";
+                }
+
+                return Json(
+                   new
+                   {
+                       nameValidationMessage = nameValidationMessage,
+                       phoneValidationMessage = phoneValidationMessage,
+                       cityValidationMessage = cityValidationMessage,
+                       errorMessage = "400 Bad Request: One or more required parameters were missing."
+                   }
+                   );
+            }
+
+            Person person = new Person(
                     ++PeopleService.PersonCounter,
-                    createPersonViewModel.Name,
-                    createPersonViewModel.Phone,
-                    createPersonViewModel.City
+                    name,
+                    phone,
+                    city
                     );
 
-                PeopleService.People.Add(person);
+            PeopleService.People.Add(person);
+            this.peopleViewModel.People = PeopleService.People;
 
-                TempData["create-person"] = "success";
-            }
-            else
-            {
-                TempData["create-person"] = "failure";
-                this.peopleViewModel.People = PeopleService.People;
-                return View("/Views/People/People.cshtml", this.peopleViewModel);
-            }
-
-            return RedirectToAction(nameof(GetPeople), "People");
+            return PartialView("_PeoplePartial", this.peopleViewModel);
         }
 
         public IActionResult DeletePerson(int id)
@@ -78,30 +100,31 @@ namespace MVCAssignments.Controllers
             if (PeopleService.People.Find(person => person.Id == id) != null)
             {
                 PeopleService.People.RemoveAll(person => person.Id == id);
-                TempData["delete-person"] = "success";
-            }
-            else
-            {
-                TempData["delete-person"] = "failure";
+                this.peopleViewModel.People = PeopleService.People;
+                return StatusCode(200);
             }
 
-            return RedirectToAction(nameof(GetPeople), "People");
+            return StatusCode(400);
         }
+
         public IActionResult GetPersonDetails(int id)
         {
             if (PeopleService.People.Find(person => person.Id == id) == null)
             {
-                TempData["get-person-details"] = "failure";
-                return View("/Views/People/People.cshtml", this.peopleViewModel);
+                return Json(
+                   new
+                   {
+                       errorMessage = "400 Bad Request: Id parameter not valid."
+                   }
+                   );
             }
             else
             {
                 this.peopleViewModel.People = new List<Person>();
                 this.peopleViewModel.People.Add(PeopleService.People.Find(person => person.Id == id));
-                TempData["get-person-details"] = "success";
             }
 
-            return View("/Views/People/People.cshtml", this.peopleViewModel);
+            return PartialView("_PersonDetailsPartial", this.peopleViewModel);
         }
     }
 }

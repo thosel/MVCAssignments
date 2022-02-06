@@ -1,0 +1,13 @@
+﻿@model PeopleViewModel
+
+@{
+    foreach (var person in @Model.People)
+    {
+        <h4>@person.Name</h4>
+        <p>
+            <div>Id: @person.Id</div>
+            <div>Phone number: @person.Phone</div>
+            <div>City: @person.City</div>
+        </p>
+    }
+}

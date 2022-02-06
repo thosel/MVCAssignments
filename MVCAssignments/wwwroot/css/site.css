@@ -10,3 +10,8 @@ body {
 .pointer-cursor {
     cursor: pointer;
 }
+
+.btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none;
+}

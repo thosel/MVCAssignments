@@ -9,44 +9,16 @@
 <section class="row">
     <section class="col-8 mb-4">
 
-        @{if ((string)TempData["create-person"] == "success")
-            {
-                <div class="alert alert-success">
-                    <strong>A new person was created successfully!</strong>
-                </div>
-            }
-            else if ((string)TempData["create-person"] == "failure")
-            {
-                <div class="alert alert-danger">
-                    <strong>Failed to create a new person!</strong>
-                </div>
-            }
-        }
-
-        @{if ((string)TempData["delete-person"] == "success")
-            {
-                <div class="alert alert-success">
-                    <strong>The person was successfully deleted!</strong>
-                </div>
-            }
-            else if ((string)TempData["delete-person"] == "failure")
-            {
-                <div class="alert alert-danger">
-                    <strong>Failed to delete the person!</strong>
-                </div>
-            }
-        }
-
         <form asp-controller="People" asp-action="GetPeople" method="post">
             <div class="form-group">
                 <label for="search-text">Search text:</label>
-                <input type="text" class="form-control" id="search-text" name="searchString" autofocus>
+                <input type="text" class="form-control" id="search-text" name="searchString" />
             </div>
             <div class="form-group">
-                <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true">
+                <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true" />
                 <label for="case-sensitive">Case sensitive</label>
             </div>
-            <button type="submit"
+            <button id="search-button" type="submit"
                     class="form-control form-control-sm btn btn-success mb-2">
                 Submit
             </button>
@@ -58,55 +30,66 @@
             <div class="form-group">
                 <label asp-for="CreatePersonViewModel.Name"></label>
                 <input asp-for="CreatePersonViewModel.Name" class="form-control" />
-                <span asp-validation-for="CreatePersonViewModel.Name" class="text-danger"></span>
+                <span asp-validation-for="CreatePersonViewModel.Name" class="text-danger" id="name-validation-message"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatePersonViewModel.Phone"></label>
                 <input asp-for="CreatePersonViewModel.Phone" class="form-control" />
-                <span asp-validation-for="CreatePersonViewModel.Phone" class="text-danger"></span>
+                <span asp-validation-for="CreatePersonViewModel.Phone" class="text-danger" id="phone-validation-message"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatePersonViewModel.City"></label>
                 <input asp-for="CreatePersonViewModel.City" class="form-control" />
-                <span asp-validation-for="CreatePersonViewModel.City" class="text-danger"></span>
+                <span asp-validation-for="CreatePersonViewModel.City" class="text-danger" id="city-validation-message"></span>
             </div>
-            <button type="submit" class="form-control form-control-sm btn btn-success mb-2">
+            <button id="create-button" type="submit" class="form-control form-control-sm btn btn-success mb-2">
                 Submit
             </button>
             <button type="reset" class="form-control form-control-sm btn btn-danger">
                 Reset
             </button>
         </form>
-
         <hr />
     </section>
     <section class="col-8 mb-4">
-        <div class="row">
-            <div class="col-3">
-                <strong>Name</strong>
+        <form asp-controller="People" method="post">
+            <label for="id-text" class="control-label">Id:</label>
+            <div class="input-group">
+                <input type="number" id="id-number" min="1" name="id" />
+                <button id="get-people-button" type="submit" asp-action="GetPeople"
+                        class="btn btn-primary">
+                    People
+                </button>
+                <button id="get-person-details-button" type="submit" asp-action="GetPersonDetails"
+                        class="btn btn-primary">
+                    Details
+                </button>
+                <button id="delete-person-button" type="submit" asp-action="DeletePerson"
+                        class="btn btn-primary">
+                    Delete
+                </button>
             </div>
-            <div class="col-3">
-                <strong>Phone</strong>
-            </div>
-            <div class="col-3">
-                <strong>City</strong>
-            </div>
-            <div class="col-3">
-                <strong>Id</strong>
-            </div>
-        </div>
-
-        <hr />
-
-        @{
-            foreach (var person in Model.People)
-            {
-                <div class="row">
-                    <partial name="../Shared/_PersonPartial.cshtml" model="person" />
-                </div>
+        </form>
+    </section>
+    <section class="col-8 mb-4">
+        <section>
+            <partial name="../Shared/_AlertMessagesPartial.cshtml" />
+            @{
+                if ((string)TempData["get-person-details"] == "success")
+                {
+                    <partial name="../Shared/_PersonDetailsPartial.cshtml" model="Model" />
+                }
+                else
+                {
+                    <div id="noscript-people-partial">
+                        <partial name="../Shared/_PeoplePartial.cshtml" model="Model" />
+                    </div>
+                }
             }
-        }
+        </section>
+        <section id="people"></section>
     </section>
 </section>
 
-<script src="~/js/sort-people-table.js" asp-append-version="true"></script>
+<script src="~/js/people.js" asp-append-version="true"></script>
+<script src="~/js/people-view.js" asp-append-version="true"></script>
