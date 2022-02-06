@@ -3,12 +3,14 @@
 class People {
     constructor(containerElement) {
         this.containerElement = containerElement;
+        this.action;
+        this.response;
         this.status;
         this.statusMessage;
-        this.response;
     }
 
     searchPeople(searchString, caseSensitive) {
+        this.action = "searchPeople";
         return new Promise((resolve) => {
             const config = {
                 method: 'POST',
@@ -20,8 +22,7 @@ class People {
                     return response.text();
                 })
                 .then((responseString) => {
-                    const parser = new DOMParser();
-                    return parser.parseFromString(responseString, "text/html");
+                    return this.parseHtmlDocumentFromString(responseString);
                 })
                 .then((htmlDocument) => {
                     resolve(htmlDocument);
@@ -33,6 +34,7 @@ class People {
     }
 
     createPerson(name, phone, city) {
+        this.action = "createPerson";
         return new Promise((resolve) => {
             const config = {
                 method: 'POST',
@@ -41,33 +43,31 @@ class People {
 
             this.fetchRequest(config)
                 .then((response) => {
-                    if (response.errorMessage) {
-                        this.response = response;
+                    this.response = response;
+                    if (response.statusMessage) {
                         this.status = "failure";
                         this.statusMessage = "Failed to create a new person!";
-                        throw new Error(response.errorMessage);
+                        throw new Error();
                     } else {
                         this.status = "success";
                         this.statusMessage = "A new person was created successfully!";
-                        this.response = undefined;
                         return response.text();
                     }
                 })
                 .then((responseString) => {
-                    const parser = new DOMParser();
-                    return parser.parseFromString(responseString, "text/html");
+                    return this.parseHtmlDocumentFromString(responseString);
                 })
                 .then((htmlDocument) => {
                     resolve(htmlDocument);
                 })
-                .catch((error) => {
-                    console.log(error);
+                .catch(() => {
                     this.updateView(undefined);
                 });
         });
     }
 
     getPersonDetails(id) {
+        this.action = "getPersonDetails";
         return new Promise((resolve) => {
             const config = {
                 method: 'POST',
@@ -76,32 +76,35 @@ class People {
 
             this.fetchRequest(config)
                 .then((response) => {
+                    this.response = response;
                     if (response.errorMessage) {
-                        this.response = response;
                         this.status = "failure";
                         this.statusMessage = "Failed to find the person!";
-                        throw new Error(response.errorMessage);
+                        throw new Error();
                     } else {
                         this.status = "success";
-                        this.response = undefined;
                         return response.text();
                     }
                 })
                 .then((responseString) => {
-                    const parser = new DOMParser();
-                    return parser.parseFromString(responseString, "text/html");
+                    return this.parseHtmlDocumentFromString(responseString);
                 })
                 .then((htmlDocument) => {
                     resolve(htmlDocument);
                 })
-                .catch((error) => {
-                    console.log(error);
+                .catch(() => {
                     this.updateView(undefined);
                 });
         });
     }
 
+    parseHtmlDocumentFromString(htmlString) {
+        const parser = new DOMParser();
+        return parser.parseFromString(htmlString, "text/html");
+    }
+
     deletePerson(id) {
+        this.action = "deletePerson";
         return new Promise((resolve) => {
             const config = {
                 method: 'POST',
@@ -113,13 +116,12 @@ class People {
                     if (response.status != 200) {
                         this.status = "failure";
                         this.statusMessage = "Failed to delete the person!";
-                        throw new Error(response.statusText);
+                        throw new Error();
                     } else {
                         resolve();
                     }
                 })
-                .catch((error) => {
-                    console.log(error);
+                .catch(() => {
                     this.updateView(undefined);
                 });
         });
@@ -147,45 +149,62 @@ class People {
         });
     }
 
-    updateView(htmlDocument) {
-        if (htmlDocument !== undefined) {
-            document.querySelector("#noscript-people-partial").classList.add("d-none");
-            this.containerElement.textContent = "";
-            document.querySelector("#id-number").value = "";
-        }
+    updateCreatePersonForm() {
+        let nameTextInput = document.querySelector("#CreatePersonViewModel_Name");
+        let phoneTextInput = document.querySelector("#CreatePersonViewModel_Phone");
+        let cityTextInput = document.querySelector("#CreatePersonViewModel_City");
+        let nameValidationMessageSpan = document.querySelector("#name-validation-message");
+        let phoneValidationMessageSpan = document.querySelector("#phone-validation-message");
+        let cityValidationMessageSpan = document.querySelector("#city-validation-message");
 
-        if (this.response !== undefined) {
+        if (this.action === "createPerson") {
             if (this.response.nameValidationMessage !== "") {
-                document.querySelector("#name-validation-message").textContent = this.response.nameValidationMessage;
+                nameValidationMessageSpan.textContent = this.response.nameValidationMessage;
             } else {
-                document.querySelector("#name-validation-message").textContent = "";
+                nameValidationMessageSpan.textContent = "";
             }
 
             if (this.response.phoneValidationMessage !== "") {
-                document.querySelector("#phone-validation-message").textContent = this.response.phoneValidationMessage;
+                phoneValidationMessageSpan.textContent = this.response.phoneValidationMessage;
             } else {
-                document.querySelector("#phone-validation-message").textContent = "";
+                phoneValidationMessageSpan.textContent = "";
             }
 
             if (this.response.cityValidationMessage !== "") {
-                document.querySelector("#city-validation-message").textContent = this.response.cityValidationMessage;
+                cityValidationMessageSpan.textContent = this.response.cityValidationMessage;
             } else {
-                document.querySelector("#city-validation-message").textContent = "";
+                cityValidationMessageSpan.textContent = "";
             }
 
-            this.responseStatusMessage = "";
-        }
+            if (this.status === "success") {
+                nameTextInput.value = "";
+                phoneTextInput.value = "";
+                cityTextInput.value = "";
+            }
 
+        } else {
+            nameValidationMessageSpan.textContent = "";
+            phoneValidationMessageSpan.textContent = "";
+            cityValidationMessageSpan.textContent = "";
+            nameTextInput.value = "";
+            phoneTextInput.value = "";
+            cityTextInput.value = "";
+        }
+    }
+
+    updateGetPeopleForm() {
+        let searchStringInput = document.querySelector("#search-text")
+        searchStringInput.value = "";
+
+        let checkBoxInput = document.querySelector("#case-sensitive");
+        checkBoxInput.checked = false;
+    }
+
+    updateAlertMessage() {
         let statusDiv = document.querySelector("#status-div");
         let statusMessage = document.querySelector("#status-message");
 
         if (this.status === "success" && this.statusMessage !== undefined) {
-            document.querySelector("#name-validation-message").textContent = "";
-            document.querySelector("#phone-validation-message").textContent = "";
-            document.querySelector("#city-validation-message").textContent = "";
-            document.querySelector("#CreatePersonViewModel_Name").value = "";
-            document.querySelector("#CreatePersonViewModel_Phone").value = "";
-            document.querySelector("#CreatePersonViewModel_City").value = "";
 
             if (statusDiv.classList.contains("d-none")) {
                 statusDiv.classList.remove("d-none");
@@ -204,9 +223,6 @@ class People {
             }
 
             statusMessage.textContent = this.statusMessage;
-
-            this.statusMessage = undefined;
-            this.status = "";
         } else if (this.status === "failure" && this.statusMessage !== undefined) {
             if (statusDiv.classList.contains("d-none")) {
                 statusDiv.classList.remove("d-none");
@@ -225,15 +241,7 @@ class People {
             }
 
             statusMessage.textContent = this.statusMessage;
-
-            this.statusMessage = undefined;
-            this.status = "";
         } else {
-            document.querySelector("#name-validation-message").textContent = "";
-            document.querySelector("#phone-validation-message").textContent = "";
-            document.querySelector("#city-validation-message").textContent = "";
-            statusDiv.classList.remove("alert");
-
             if (statusDiv.classList.contains("alert")) {
                 statusDiv.classList.remove("alert");
             }
@@ -250,6 +258,24 @@ class People {
                 statusDiv.classList.add("d-none");
             }
         }
+
+        this.status = undefined;
+        this.statusMessage = undefined;
+    }
+
+    updateView(htmlDocument) {
+        if (htmlDocument !== undefined) {
+            document.querySelector("#noscript-people-partial").classList.add("d-none");
+            this.containerElement.textContent = "";
+        }
+
+        this.updateGetPeopleForm();
+
+        this.updateCreatePersonForm();
+
+        document.querySelector("#id-number").value = "";
+
+        this.updateAlertMessage();
 
         if (htmlDocument !== undefined) {
             let body = htmlDocument.querySelector("body");

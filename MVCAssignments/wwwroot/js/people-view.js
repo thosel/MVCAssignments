@@ -17,11 +17,9 @@ searchButton.addEventListener("click", function (event) {
 
     let searchStringInput = document.querySelector("#search-text")
     let searchString = searchStringInput.value;
-    searchStringInput.value = "";
 
     let checkBoxInput = document.querySelector("#case-sensitive");
     let caseSensitive = checkBoxInput.checked;
-    checkBoxInput.checked = false;
 
     people.searchPeople(searchString, caseSensitive)
         .then((htmlDocument) => {

@@ -52,32 +52,13 @@ namespace MVCAssignments.Controllers
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(city))
             {
-                string nameValidationMessage = "";
-                string phoneValidationMessage = "";
-                string cityValidationMessage = "";
-
-                if (string.IsNullOrEmpty(name))
-                {
-                    nameValidationMessage = "A name is required.";
-                }
-
-                if (string.IsNullOrEmpty(phone))
-                {
-                    phoneValidationMessage = "A phone number is required.";
-                }
-
-                if (string.IsNullOrEmpty(city))
-                {
-                    cityValidationMessage = "A city is required.";
-                }
-
                 return Json(
                    new
                    {
-                       nameValidationMessage = nameValidationMessage,
-                       phoneValidationMessage = phoneValidationMessage,
-                       cityValidationMessage = cityValidationMessage,
-                       errorMessage = "400 Bad Request: One or more required parameters were missing."
+                       nameValidationMessage = string.IsNullOrEmpty(name) ? "A name is required." : "",
+                       phoneValidationMessage = string.IsNullOrEmpty(phone) ? "A phone number is required." : "",
+                       cityValidationMessage = string.IsNullOrEmpty(city) ? "A city is required." : "",
+                       statusMessage = "400 Bad Request: One or more required parameters were missing."
                    }
                    );
             }
