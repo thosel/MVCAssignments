@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Data\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
