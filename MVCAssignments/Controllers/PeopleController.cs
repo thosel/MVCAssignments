@@ -8,12 +8,14 @@ namespace MVCAssignments.Controllers
 {
     public class PeopleController : Controller
     {
+        private readonly IPeopleService peopleService;
         private readonly PeopleViewModel peopleViewModel;
 
-        public PeopleController()
+        public PeopleController(IPeopleService peopleService)
         {
+            this.peopleService = peopleService;
             this.peopleViewModel = new PeopleViewModel();
-            this.peopleViewModel.People = PeopleService.People;
+            this.peopleViewModel.People = this.peopleService.Read();
         }
 
         public IActionResult GetPeople()
@@ -26,22 +28,7 @@ namespace MVCAssignments.Controllers
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                if (caseSensitive)
-                {
-                    this.peopleViewModel.People = PeopleService.People.FindAll(person => person.Name.Contains(searchString) || person.City.Contains(searchString));
-                }
-                else if (!caseSensitive)
-                {
-                    this.peopleViewModel.People = new List<Person>();
-
-                    foreach (var person in PeopleService.People)
-                    {
-                        if (person.Name.ToLower().Contains(searchString.ToLower()) || person.City.ToLower().Contains(searchString.ToLower()))
-                        {
-                            this.peopleViewModel.People.Add(person);
-                        }
-                    }
-                }
+                this.peopleViewModel.People = this.peopleService.FindPeople(searchString, caseSensitive);
             }
 
             return View("/Views/People/People.cshtml", this.peopleViewModel);
@@ -52,21 +39,19 @@ namespace MVCAssignments.Controllers
         {
             if (ModelState.IsValid)
             {
-                Person person = new Person(
-                    ++PeopleService.PersonCounter,
-                    createPersonViewModel.Name,
+                Person person = new Person(createPersonViewModel.Name,
                     createPersonViewModel.Phone,
                     createPersonViewModel.City
                     );
 
-                PeopleService.People.Add(person);
+                this.peopleService.CreatePerson(person);
 
                 TempData["create-person"] = "success";
             }
             else
             {
                 TempData["create-person"] = "failure";
-                this.peopleViewModel.People = PeopleService.People;
+                this.peopleViewModel.People = this.peopleService.Read();
                 return View("/Views/People/People.cshtml", this.peopleViewModel);
             }
 
@@ -75,9 +60,9 @@ namespace MVCAssignments.Controllers
 
         public IActionResult DeletePerson(int id)
         {
-            if (PeopleService.People.Find(person => person.Id == id) != null)
+            if (this.peopleService.FindPerson(id) != null)
             {
-                PeopleService.People.RemoveAll(person => person.Id == id);
+                this.peopleService.DeletePerson(id);
                 TempData["delete-person"] = "success";
             }
             else
@@ -87,9 +72,10 @@ namespace MVCAssignments.Controllers
 
             return RedirectToAction(nameof(GetPeople), "People");
         }
+
         public IActionResult GetPersonDetails(int id)
         {
-            if (PeopleService.People.Find(person => person.Id == id) == null)
+            if (this.peopleService.FindPerson(id) == null)
             {
                 TempData["get-person-details"] = "failure";
                 return View("/Views/People/People.cshtml", this.peopleViewModel);
@@ -97,7 +83,7 @@ namespace MVCAssignments.Controllers
             else
             {
                 this.peopleViewModel.People = new List<Person>();
-                this.peopleViewModel.People.Add(PeopleService.People.Find(person => person.Id == id));
+                this.peopleViewModel.People.Add(this.peopleService.FindPerson(id));
                 TempData["get-person-details"] = "success";
             }
 

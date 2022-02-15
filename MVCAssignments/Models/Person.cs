@@ -1,22 +1,26 @@
-﻿namespace MVCAssignments.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MVCAssignments.Models
 {
     public class Person
     {
-        private readonly int id;
-        public Person(int id, string name, string phone, string city)
+        public Person(string name, string phone, string city)
         {
-            this.id = id;
             Name = name;
             Phone = phone;
             City = city;
         }
 
-        public int Id
-        {
-            get { return this.id; }
-        }
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
+
+        [Required]
         public string Phone { get; set; }
+
+        [Required]
         public string City { get; set; }
     }
 }

@@ -8,17 +8,14 @@ namespace MVCAssignments.Controllers
 {
     public class PeopleAjaxController : Controller
     {
+        private readonly IPeopleService peopleService;
         private readonly PeopleViewModel peopleViewModel;
 
-        public PeopleAjaxController()
+        public PeopleAjaxController(IPeopleService peopleService)
         {
+            this.peopleService = peopleService;
             this.peopleViewModel = new PeopleViewModel();
-            this.peopleViewModel.People = PeopleService.People;
-        }
-
-        public IActionResult GetPeople()
-        {
-            return View("/Views/People/People.cshtml", this.peopleViewModel);
+            this.peopleViewModel.People = this.peopleService.Read();
         }
 
         [HttpPost]
@@ -26,22 +23,7 @@ namespace MVCAssignments.Controllers
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                if (caseSensitive)
-                {
-                    this.peopleViewModel.People = PeopleService.People.FindAll(person => person.Name.Contains(searchString) || person.City.Contains(searchString));
-                }
-                else if (!caseSensitive)
-                {
-                    this.peopleViewModel.People = new List<Person>();
-
-                    foreach (var person in PeopleService.People)
-                    {
-                        if (person.Name.ToLower().Contains(searchString.ToLower()) || person.City.ToLower().Contains(searchString.ToLower()))
-                        {
-                            this.peopleViewModel.People.Add(person);
-                        }
-                    }
-                }
+                this.peopleViewModel.People = this.peopleService.FindPeople(searchString, caseSensitive);
             }
 
             return PartialView("_PeoplePartial", this.peopleViewModel);
@@ -63,25 +45,20 @@ namespace MVCAssignments.Controllers
                    );
             }
 
-            Person person = new Person(
-                    ++PeopleService.PersonCounter,
-                    name,
-                    phone,
-                    city
-                    );
+            Person person = new Person(name, phone, city);
 
-            PeopleService.People.Add(person);
-            this.peopleViewModel.People = PeopleService.People;
+            this.peopleService.CreatePerson(person);
+            this.peopleViewModel.People = this.peopleService.Read();
 
             return PartialView("_PeoplePartial", this.peopleViewModel);
         }
 
         public IActionResult DeletePerson(int id)
         {
-            if (PeopleService.People.Find(person => person.Id == id) != null)
+            if (this.peopleService.FindPerson(id) != null)
             {
-                PeopleService.People.RemoveAll(person => person.Id == id);
-                this.peopleViewModel.People = PeopleService.People;
+                this.peopleService.DeletePerson(id);
+                this.peopleViewModel.People = this.peopleService.Read();
                 return StatusCode(200);
             }
 
@@ -90,7 +67,7 @@ namespace MVCAssignments.Controllers
 
         public IActionResult GetPersonDetails(int id)
         {
-            if (PeopleService.People.Find(person => person.Id == id) == null)
+            if (this.peopleService.FindPerson(id) == null)
             {
                 return Json(
                    new
@@ -102,7 +79,7 @@ namespace MVCAssignments.Controllers
             else
             {
                 this.peopleViewModel.People = new List<Person>();
-                this.peopleViewModel.People.Add(PeopleService.People.Find(person => person.Id == id));
+                this.peopleViewModel.People.Add(this.peopleService.FindPerson(id));
             }
 
             return PartialView("_PersonDetailsPartial", this.peopleViewModel);
