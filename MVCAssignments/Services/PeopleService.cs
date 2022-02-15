@@ -14,8 +14,6 @@ namespace MVCAssignments.Services
             this.db = db;
         }
 
-        public static readonly List<Person> People = new List<Person>();
-
         public List<Person> Read()
         {
             return db.People.ToList();
