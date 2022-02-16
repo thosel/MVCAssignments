@@ -15,6 +15,8 @@ See [MVC Data, Assignment 2 - Partial Views.pdf](./Assignments/MVC%20Data,%20Ass
 See [MVC Data, Assignment 3 - AJAX.pdf](./Assignments/MVC%20Data,%20Assignment%203%20-%20AJAX.pdf) for further information.
 
 See [Entity Framework, Assignment 1 - Introduction.pdf](./Assignments/Entity%20Framework,%20Assignment%201%20-%20Introduction.pdf) for further information.
+<br />
+See [Entity Framework, Assignment 2 - Many to One.pdf](./Assignments/Entity%20Framework,%20Assignment%202%20-%Many%20to%20One.pdf) for further information.
 
 ---
 Lexicon webb development course
