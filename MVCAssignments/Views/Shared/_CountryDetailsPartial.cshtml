@@ -1,0 +1,11 @@
+﻿@model CountriesViewModel
+
+@{
+    foreach (var country in @Model.Countries)
+    {
+        <h4>@country.Name</h4>
+        <p>
+            <div>Id: @country.Id</div>
+        </p>
+    }
+}

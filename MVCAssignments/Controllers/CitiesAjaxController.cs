@@ -18,9 +18,10 @@ namespace MVCAssignments.Controllers
             this.citiesService = citiesService;
             this.countriesService = countriesService;
 
-            this.citiesViewModel = new CitiesViewModel();
-
-            this.citiesViewModel.CreateCityViewModel = new CreateCityViewModel();
+            this.citiesViewModel = new CitiesViewModel
+            {
+                CreateCityViewModel = new CreateCityViewModel()
+            };
             this.citiesViewModel.CreateCityViewModel.Countries = new SelectList(this.countriesService.Read(), "Id", "Name");
 
             this.citiesViewModel.Cities = this.citiesService.Read();
@@ -87,8 +88,10 @@ namespace MVCAssignments.Controllers
             }
             else
             {
-                this.citiesViewModel.Cities = new List<City>();
-                this.citiesViewModel.Cities.Add(this.citiesService.FindCity(id));
+                this.citiesViewModel.Cities = new List<City>
+                {
+                    this.citiesService.FindCity(id)
+                };
             }
 
             return PartialView("_CityDetailsPartial", this.citiesViewModel);
