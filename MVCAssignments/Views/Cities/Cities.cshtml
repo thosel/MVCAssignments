@@ -1,0 +1,92 @@
+﻿@model CitiesViewModel
+
+@{
+    ViewData["Title"] = "Cities";
+}
+
+<h1>Cities</h1>
+
+<section class="row">
+    <section class="col-8 mb-4">
+
+        <form asp-controller="Cities" asp-action="GetCities" method="post">
+            <div class="form-group">
+                <label for="search-text">Search text:</label>
+                <input type="text" class="form-control" id="search-text" name="searchString" />
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true" />
+                <label for="case-sensitive">Case sensitive</label>
+            </div>
+            <button id="search-button" type="submit"
+                    class="form-control form-control-sm btn btn-success mb-2">
+                Submit
+            </button>
+        </form>
+
+        <hr />
+
+        <form asp-controller="Cities" asp-action="CreateCity" method="post">
+            <div class="form-group">
+                <label asp-for="CreateCityViewModel.Name"></label>
+                <input asp-for="CreateCityViewModel.Name" class="form-control" />
+                <span asp-validation-for="CreateCityViewModel.Name" class="text-danger" id="name-validation-message"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateCityViewModel.Country"></label>
+                <select asp-for="CreateCityViewModel.Country" asp-items="@Model.CreateCityViewModel.Countries" class="form-control">
+                    <option value="">Please select a country</option>
+                </select>
+                <span asp-validation-for="CreateCityViewModel.Country" class="text-danger" id="country-validation-message"></span>
+            </div>
+            <button id="create-button" type="submit" class="form-control form-control-sm btn btn-success mb-2">
+                Submit
+            </button>
+            <button type="reset" class="form-control form-control-sm btn btn-danger">
+                Reset
+            </button>
+        </form>
+        <hr />
+    </section>
+    <section class="col-8 mb-4">
+        <form asp-controller="Cities" method="post">
+            <label for="id-text" class="control-label">Id:</label>
+            <div class="input-group">
+                <input type="number" id="id-number" min="1" name="id" />
+                <button id="get-cities-button" type="submit" asp-action="GetCities"
+                        class="btn btn-primary">
+                    Cities
+                </button>
+                <button id="get-city-details-button" type="submit" asp-action="GetCityDetails"
+                        class="btn btn-primary">
+                    Details
+                </button>
+                <button id="delete-city-button" type="submit" asp-action="DeleteCity"
+                        class="btn btn-primary">
+                    Delete
+                </button>
+            </div>
+        </form>
+    </section>
+    <section class="col-8 mb-4">
+        <section>
+            <partial name="../Shared/_AlertMessagesPartial.cshtml" />
+            @{
+                if ((string)TempData["get-city-details"] == "success")
+                {
+                    <partial name="../Shared/_CityDetailsPartial.cshtml" model="Model" />
+                }
+                else
+                {
+                    <div id="noscript-cities-partial">
+                        <partial name="../Shared/_CitiesPartial.cshtml" model="Model" />
+                    </div>
+                }
+            }
+        </section>
+        <section id="cities"></section>
+    </section>
+</section>
+
+<script src="~/js/cities.js" asp-append-version="true"></script>
+<script src="~/js/cities-view.js" asp-append-version="true"></script>

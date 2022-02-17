@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAssignments.Models;
 using MVCAssignments.Services;
 using MVCAssignments.ViewModels;
@@ -9,12 +10,19 @@ namespace MVCAssignments.Controllers
     public class PeopleAjaxController : Controller
     {
         private readonly IPeopleService peopleService;
+        private readonly ICitiesService citiesService;
         private readonly PeopleViewModel peopleViewModel;
 
-        public PeopleAjaxController(IPeopleService peopleService)
+        public PeopleAjaxController(IPeopleService peopleService, ICitiesService citiesService)
         {
             this.peopleService = peopleService;
+            this.citiesService = citiesService;
+
             this.peopleViewModel = new PeopleViewModel();
+
+            this.peopleViewModel.CreatePersonViewModel = new CreatePersonViewModel();
+            this.peopleViewModel.CreatePersonViewModel.Cities = new SelectList(this.citiesService.Read(), "Id", "Name");
+
             this.peopleViewModel.People = this.peopleService.Read();
         }
 
@@ -32,20 +40,22 @@ namespace MVCAssignments.Controllers
         [HttpPost]
         public IActionResult CreatePerson(string name, string phone, string city)
         {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(city))
+            bool isCityIdValid = int.TryParse(city, out int cityId);
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(phone) || !isCityIdValid)
             {
                 return Json(
                    new
                    {
                        nameValidationMessage = string.IsNullOrEmpty(name) ? "A name is required." : "",
                        phoneValidationMessage = string.IsNullOrEmpty(phone) ? "A phone number is required." : "",
-                       cityValidationMessage = string.IsNullOrEmpty(city) ? "A city is required." : "",
+                       cityValidationMessage = this.citiesService.FindCity(cityId) == null ? "A city is required." : "",
                        statusMessage = "400 Bad Request: One or more required parameters were missing."
                    }
                    );
             }
 
-            Person person = new Person(name, phone, city);
+            Person person = new Person(name, phone, this.citiesService.FindCity(cityId));
 
             this.peopleService.CreatePerson(person);
             this.peopleViewModel.People = this.peopleService.Read();

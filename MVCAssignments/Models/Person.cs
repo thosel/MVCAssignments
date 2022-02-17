@@ -4,7 +4,9 @@ namespace MVCAssignments.Models
 {
     public class Person
     {
-        public Person(string name, string phone, string city)
+        private Person() { }
+
+        public Person(string name, string phone, City city)
         {
             Name = name;
             Phone = phone;
@@ -21,6 +23,6 @@ namespace MVCAssignments.Models
         public string Phone { get; set; }
 
         [Required]
-        public string City { get; set; }
+        public City City { get; set; }
     }
 }

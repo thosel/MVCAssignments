@@ -39,7 +39,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="CreatePersonViewModel.City"></label>
-                <input asp-for="CreatePersonViewModel.City" class="form-control" />
+                <select asp-for="CreatePersonViewModel.City" asp-items="@Model.CreatePersonViewModel.Cities" class="form-control">
+                    <option value="">Please select a city</option>
+                </select>
                 <span asp-validation-for="CreatePersonViewModel.City" class="text-danger" id="city-validation-message"></span>
             </div>
             <button id="create-button" type="submit" class="form-control form-control-sm btn btn-success mb-2">

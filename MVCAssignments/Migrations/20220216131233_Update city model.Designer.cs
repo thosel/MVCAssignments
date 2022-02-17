@@ -3,14 +3,16 @@ using MVCAssignments.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVCAssignments.Migrations
 {
     [DbContext(typeof(MVCAssignmentsContext))]
-    partial class MVCAssignmentsContextModelSnapshot : ModelSnapshot
+    [Migration("20220216131233_Update city model")]
+    partial class Updatecitymodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

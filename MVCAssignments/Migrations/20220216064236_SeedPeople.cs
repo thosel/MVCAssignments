@@ -2,31 +2,30 @@
 
 namespace MVCAssignments.Migrations
 {
-    public partial class secondseed : Migration
+    public partial class SeedPeople : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.UpdateData(
-                table: "People",
-                keyColumn: "Id",
-                keyValue: 1000,
-                column: "Name",
-                value: "Kålle Glagogubbe");
-
             migrationBuilder.InsertData(
                 table: "People",
-                columns: new[] { "Id", "City", "Name", "Phone" },
+                columns: new[] { "Id", "CityId", "Name", "Phone" },
                 values: new object[,]
                 {
-                    { 1001, "Stockholm", "Sune Söderkis", "08654321" },
-                    { 1002, "Luleå", "Enok Evertsson", "0704654321" },
-                    { 1003, "Avesta", "Alva Alm", "0703216541" },
-                    { 1004, "Göteborg", "Ted Rajtantajtansson", "031321654" }
+                    { 1000, 1000, "Sven Svensk", "1111111111" },
+                    { 1001, 1001, "Pecka Finsk", "2222222222" },
+                    { 1002, 1002, "Sigurður Isländsk", "3333333333" },
+                    { 1003, 1003, "Preben Dansk", "4444444444" },
+                    { 1004, 1004, "Ola Norman", "5555555555" }
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DeleteData(
+                table: "People",
+                keyColumn: "Id",
+                keyValue: 1000);
+
             migrationBuilder.DeleteData(
                 table: "People",
                 keyColumn: "Id",
@@ -46,13 +45,6 @@ namespace MVCAssignments.Migrations
                 table: "People",
                 keyColumn: "Id",
                 keyValue: 1004);
-
-            migrationBuilder.UpdateData(
-                table: "People",
-                keyColumn: "Id",
-                keyValue: 1000,
-                column: "Name",
-                value: "William Shakespeare");
         }
     }
 }

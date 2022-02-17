@@ -1,4 +1,5 @@
-﻿using MVCAssignments.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MVCAssignments.Models;
 using MVCAssignments.Models.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace MVCAssignments.Services
 
         public List<Person> Read()
         {
-            return db.People.ToList();
+            return db.People.Include(person => person.City).ToList();
         }
 
         public List<Person> FindPeople(string searchString, bool caseSensitive)
@@ -24,14 +25,14 @@ namespace MVCAssignments.Services
             List<Person> peopleToReturn = new List<Person>();
             List<Person> people = db.People.Where(person =>
                 person.Name.Contains(searchString) ||
-                person.City.Contains(searchString)
+                person.City.Name.Contains(searchString)
                 ).ToList();
 
             if (caseSensitive)
             {
                 foreach (var person in people)
                 {
-                    if (person.Name.Contains(searchString) || person.City.Contains(searchString))
+                    if (person.Name.Contains(searchString) || person.City.Name.Contains(searchString))
                     {
                         peopleToReturn.Add(person);
                     }

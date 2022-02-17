@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVCAssignments.ViewModels
 {
@@ -17,5 +19,7 @@ namespace MVCAssignments.ViewModels
         [Display(Name = "City:")]
         [Required(ErrorMessage = "A city is required.")]
         public string City { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
     }
 }

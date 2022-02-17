@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAssignments.Models;
 using MVCAssignments.Services;
 using MVCAssignments.ViewModels;
@@ -9,12 +10,19 @@ namespace MVCAssignments.Controllers
     public class PeopleController : Controller
     {
         private readonly IPeopleService peopleService;
+        private readonly ICitiesService citiesService;
         private readonly PeopleViewModel peopleViewModel;
 
-        public PeopleController(IPeopleService peopleService)
+        public PeopleController(IPeopleService peopleService, ICitiesService citiesService)
         {
             this.peopleService = peopleService;
+            this.citiesService = citiesService;
+
             this.peopleViewModel = new PeopleViewModel();
+
+            this.peopleViewModel.CreatePersonViewModel = new CreatePersonViewModel();
+            this.peopleViewModel.CreatePersonViewModel.Cities = new SelectList(this.citiesService.Read(), "Id", "Name");
+
             this.peopleViewModel.People = this.peopleService.Read();
         }
 
@@ -37,11 +45,12 @@ namespace MVCAssignments.Controllers
         [HttpPost]
         public IActionResult CreatePerson(CreatePersonViewModel createPersonViewModel)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && int.TryParse(createPersonViewModel.City, out int id))
             {
-                Person person = new Person(createPersonViewModel.Name,
+                Person person = new Person(
+                    createPersonViewModel.Name,
                     createPersonViewModel.Phone,
-                    createPersonViewModel.City
+                    this.citiesService.FindCity(id)
                     );
 
                 this.peopleService.CreatePerson(person);
