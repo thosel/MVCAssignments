@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVCAssignments.Models
 {
@@ -24,5 +25,7 @@ namespace MVCAssignments.Models
 
         [Required]
         public City City { get; set; }
+
+        public List<PersonLanguage> PersonLanguages { get; set; }
     }
 }
