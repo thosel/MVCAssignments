@@ -17,7 +17,7 @@ namespace MVCAssignments.Services
 
         public List<Person> Read()
         {
-            return db.People.Include(person => person.City).ToList();
+            return db.People.Include(person => person.City).Include(person => person.PersonLanguages).ToList();
         }
 
         public List<Person> FindPeople(string searchString, bool caseSensitive)

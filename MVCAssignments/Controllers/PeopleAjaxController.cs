@@ -11,19 +11,29 @@ namespace MVCAssignments.Controllers
     {
         private readonly IPeopleService peopleService;
         private readonly ICitiesService citiesService;
+        private readonly ILanguagesService languagesService;
         private readonly PeopleViewModel peopleViewModel;
 
-        public PeopleAjaxController(IPeopleService peopleService, ICitiesService citiesService)
+        public PeopleAjaxController(IPeopleService peopleService, ICitiesService citiesService, ILanguagesService languagesService)
         {
             this.peopleService = peopleService;
             this.citiesService = citiesService;
+            this.languagesService = languagesService;
 
-            this.peopleViewModel = new PeopleViewModel();
+            this.peopleViewModel = new PeopleViewModel
+            {
+                CreatePersonViewModel = new CreatePersonViewModel
+                {
+                    Cities = new SelectList(this.citiesService.Read(), "Id", "Name")
+                },
 
-            this.peopleViewModel.CreatePersonViewModel = new CreatePersonViewModel();
-            this.peopleViewModel.CreatePersonViewModel.Cities = new SelectList(this.citiesService.Read(), "Id", "Name");
+                CreateLanguageViewModel = new CreateLanguageViewModel
+                {
+                    Languages = new SelectList(this.languagesService.Read(), "Id", "Name")
+                },
 
-            this.peopleViewModel.People = this.peopleService.Read();
+                People = this.peopleService.Read()
+            };
         }
 
         [HttpPost]
@@ -88,8 +98,10 @@ namespace MVCAssignments.Controllers
             }
             else
             {
-                this.peopleViewModel.People = new List<Person>();
-                this.peopleViewModel.People.Add(this.peopleService.FindPerson(id));
+                this.peopleViewModel.People = new List<Person>
+                {
+                    this.peopleService.FindPerson(id)
+                };
             }
 
             return PartialView("_PersonDetailsPartial", this.peopleViewModel);

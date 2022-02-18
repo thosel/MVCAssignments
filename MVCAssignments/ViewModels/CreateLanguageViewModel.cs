@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVCAssignments.ViewModels
 {
@@ -9,5 +11,7 @@ namespace MVCAssignments.ViewModels
         [Display(Name = "Name:")]
         [Required(ErrorMessage = "A name is required.")]
         public string Name { get; set; }
+
+        public IEnumerable<SelectListItem> Languages { get; set; }
     }
 }

@@ -10,5 +10,14 @@
             <div>City: @person.City.Name</div>
             <div>Country: @person.City.Country.Name</div>
         </p>
+        <h6>Languages</h6>
+        <p>
+            @{
+                foreach (var language in person.PersonLanguages)
+                {
+                    <div>@language.Language.Name</div>
+                }
+            }
+        </p>
     }
 }
