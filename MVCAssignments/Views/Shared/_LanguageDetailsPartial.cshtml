@@ -1,0 +1,11 @@
+﻿@model LanguagesViewModel
+
+@{
+    foreach (var language in @Model.Languages)
+    {
+        <h4>@language.Name</h4>
+        <p>
+            <div>Id: @language.Id</div>
+        </p>
+    }
+}
