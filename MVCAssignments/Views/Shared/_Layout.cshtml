@@ -51,14 +51,14 @@
                     <li>
                         @Html.ActionLink("Guessing game", "GuessingGame", "Games", null, new { @class = "nav-link" })
                     </li>
-                    <li>
-                        @Html.ActionLink("Countries", "GetCountries", "Countries", null, new { @class = "nav-link" })
-                    </li>
-                    <li>
-                        @Html.ActionLink("Cities", "GetCities", "Cities", null, new { @class = "nav-link" })
-                    </li>
-                    <li>
-                        @Html.ActionLink("People", "GetPeople", "People", null, new { @class = "nav-link" })
+                    <li class="dropdown ">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">Database<b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-content bg-dark">
+                            @Html.ActionLink("Countries", "GetCountries", "Countries", null, new { @class = "nav-link dropdown-item" })
+                            @Html.ActionLink("Cities", "GetCities", "Cities", null, new { @class = "nav-link dropdown-item" })
+                            @Html.ActionLink("People", "GetPeople", "People", null, new { @class = "nav-link dropdown-item" })
+                            @Html.ActionLink("Languages", "GetLanguages", "Languages", null, new { @class = "nav-link dropdown-item" })
+                        </ul>
                     </li>
                 </ul>
             </div>
