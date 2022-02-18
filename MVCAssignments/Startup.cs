@@ -29,6 +29,7 @@ namespace MVCAssignments
             services.AddScoped<IPeopleService, PeopleService>();
             services.AddScoped<ICitiesService, CitiesService>();
             services.AddScoped<ICountriesService, CountriesService>();
+            services.AddScoped<ILanguagesService, LanguagesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
