@@ -15,3 +15,8 @@ body {
     outline: none !important;
     box-shadow: none;
 }
+
+.dropdown-toggle:focus + .dropdown-menu,
+.dropdown-toggle + .dropdown-menu:hover {
+    display: block;
+}
