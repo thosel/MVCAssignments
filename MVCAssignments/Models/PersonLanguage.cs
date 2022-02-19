@@ -2,6 +2,14 @@
 {
     public class PersonLanguage
     {
+        public PersonLanguage() { }
+
+        public PersonLanguage(int personId, int languageId)
+        {
+            PersonId = personId;
+            LanguageId = languageId;
+        }
+
         public int PersonId { get; set; }
         public Person Person { get; set; }
 

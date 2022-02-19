@@ -2,6 +2,40 @@
     <strong id="status-message"></strong>
 </div>
 
+@{if ((string)TempData["add-person-language"] == "success")
+    {
+        <div class="alert alert-success">
+            <strong>A person language was added successfully!</strong>
+        </div>
+    }
+    else if ((string)TempData["add-person-language"] == "failure")
+    {
+        <div class="alert alert-danger">
+            <strong>Failed to add a person language!</strong>
+        </div>
+    }
+}
+
+@{if ((string)TempData["delete-person-language"] == "success")
+    {
+        <div class="alert alert-success">
+            <strong>The person language was successfully deleted!</strong>
+        </div>
+    }
+    else if ((string)TempData["delete-person-language"] == "failure")
+    {
+        <div class="alert alert-danger">
+            <strong>Failed to delete the person language!</strong>
+        </div>
+    }
+    else if ((string)TempData["delete-person-language"] == "error")
+    {
+        <div class="alert alert-danger">
+            <strong>Failed to delete the person language due to invalid person id in uri!</strong>
+        </div>
+    }
+}
+
 @{if ((string)TempData["create-language"] == "success")
     {
         <div class="alert alert-success">

@@ -62,5 +62,22 @@ namespace MVCAssignments.Services
             db.People.Remove(FindPerson(id));
             db.SaveChanges();
         }
+
+        public void AddPersonLanguage(int personId, int languageId)
+        {
+            db.PersonLanguages.Add(new PersonLanguage(personId, languageId));
+            db.SaveChanges();
+        }
+
+        public PersonLanguage FindPersonLanguage(int personId, int languageId)
+        {
+            return db.PersonLanguages.Find(personId, languageId);
+        }
+
+        public void DeletePersonLanguage(int personId, int languageId)
+        {
+            db.PersonLanguages.Remove(FindPersonLanguage(personId, languageId));
+            db.SaveChanges();
+        }
     }
 }

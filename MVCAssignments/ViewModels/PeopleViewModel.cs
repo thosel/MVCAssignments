@@ -7,7 +7,7 @@ namespace MVCAssignments.ViewModels
     {
         public CreatePersonViewModel CreatePersonViewModel { get; set; }
 
-        public CreateLanguageViewModel CreateLanguageViewModel { get; set; }
+        public AddPersonLanguageViewModel AddPersonLanguageViewModel { get; set; }
 
         public List<Person> People { get; set; }
     }

@@ -10,14 +10,35 @@
             <div>City: @person.City.Name</div>
             <div>Country: @person.City.Country.Name</div>
         </p>
-        <h6>Languages</h6>
+        <h5>Languages:</h5>
         <p>
             @{
                 foreach (var language in person.PersonLanguages)
                 {
-                    <div>@language.Language.Name</div>
+                    <div class="col-8 d-flex justify-content-between">
+                        <div>@language.Language.Name</div>
+                        <noscript><div><a href="/People/DeletePersonLanguage?personId=@person.Id&languageId=@language.LanguageId">Delete</a></div></noscript>
+                        <div id="delete-person-language-link-div" class="d-none"><a href="#" onclick="deletePersonLanguageLinkClick(@person.Id, @language.LanguageId)">Delete</a></div>
+                    </div>
                 }
             }
         </p>
+        <hr />
+        <section class="row">
+            <section class="col-8 mb-4">
+                <form asp-controller="People" asp-action="AddPersonLanguage" method="post">
+                    <input asp-for="AddPersonLanguageViewModel.PersonId" type="hidden" value="@person.Id" />
+                    <label for="iCreateLanguageViewModel_Id" class="control-label">Add a language:</label>
+                    <div class="input-group">
+                        <select asp-for="AddPersonLanguageViewModel.LanguageId" asp-items="@Model.AddPersonLanguageViewModel.Languages" class="form-control col-6">
+                            <option value="">Please select a language</option>
+                        </select>
+                        <button id="add-person-language-button" type="submit" onclick="addPersonLanguageButtonClick()" class="btn btn-success mb-2">
+                            Add Language
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </section>
     }
 }

@@ -1,7 +1,11 @@
 ﻿"use strict"
 
 window.onload = function () {
-    document.querySelector("#noscript-people-partial").classList.remove("d-none");
+    if (document.querySelector("#noscript-people-partial") !== null) {
+        if (document.querySelector("#noscript-people-partial").classList.contains("d-none")) {
+            document.querySelector("#noscript-people-partial").classList.remove("d-none");
+        }
+    }
 };
 
 
@@ -15,7 +19,7 @@ let searchButton = document.querySelector("#search-button");
 searchButton.addEventListener("click", function (event) {
     event.preventDefault();
 
-    let searchStringInput = document.querySelector("#search-text")
+    let searchStringInput = document.querySelector("#search-text");
     let searchString = searchStringInput.value;
 
     let checkBoxInput = document.querySelector("#case-sensitive");
@@ -33,13 +37,13 @@ let createButton = document.querySelector("#create-button");
 createButton.addEventListener("click", function (event) {
     event.preventDefault();
 
-    let nameInput = document.querySelector("#CreatePersonViewModel_Name")
+    let nameInput = document.querySelector("#CreatePersonViewModel_Name");
     let name = nameInput.value;
 
-    let phoneInput = document.querySelector("#CreatePersonViewModel_Phone")
+    let phoneInput = document.querySelector("#CreatePersonViewModel_Phone");
     let phone = phoneInput.value;
 
-    let cityInput = document.querySelector("#CreatePersonViewModel_City")
+    let cityInput = document.querySelector("#CreatePersonViewModel_City");
     let city = cityInput.value;
 
     people.createPerson(name, phone, city)
@@ -66,7 +70,7 @@ getPersonDetailsButton.addEventListener("click", function (event) {
     event.preventDefault();
 
     if (isNumberInputValid()) {
-        let idInput = document.querySelector("#id-number")
+        let idInput = document.querySelector("#id-number");
         let id = idInput.value;
 
         people.getPersonDetails(id)
@@ -83,7 +87,7 @@ deletePersonButton.addEventListener("click", function (event) {
     event.preventDefault();
 
     if (isNumberInputValid()) {
-        let idInput = document.querySelector("#id-number")
+        let idInput = document.querySelector("#id-number");
         let id = idInput.value;
 
         people.deletePerson(id)
@@ -108,7 +112,7 @@ idInput.onkeydown = function (event) {
 }
 
 let isNumberInputValid = function () {
-    let idInput = document.querySelector('#id-number')
+    let idInput = document.querySelector('#id-number');
 
     if (idInput.value !== undefined && idInput.value > 0) {
         return true;
@@ -117,3 +121,20 @@ let isNumberInputValid = function () {
     }
 }
 
+let deletePersonLanguageLinkClick = function (personId, languageId) {
+    event.preventDefault();
+
+    people.deletePersonLanguage(personId, languageId)
+        .then((htmlDocument) => {
+            people.updateView(htmlDocument);
+        });
+}
+
+let addPersonLanguageButtonClick = function () {
+    event.preventDefault();
+
+    people.addPersonLanguage()
+        .then((htmlDocument) => {
+            people.updateView(htmlDocument);
+        });
+}

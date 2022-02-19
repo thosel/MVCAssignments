@@ -77,7 +77,11 @@
         <section>
             <partial name="../Shared/_AlertMessagesPartial.cshtml" />
             @{
-                if ((string)TempData["get-person-details"] == "success")
+                if ((string)TempData["get-person-details"] == "success" ||
+                    (string)TempData["add-person-language"] == "success" ||
+                    (string)TempData["add-person-language"] == "failure" ||
+                    (string)TempData["delete-person-language"] == "success" ||
+                    (string)TempData["delete-person-language"] == "failure")
                 {
                     <partial name="../Shared/_PersonDetailsPartial.cshtml" model="Model" />
                 }

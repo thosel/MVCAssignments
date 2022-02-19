@@ -27,7 +27,7 @@ namespace MVCAssignments.Controllers
                     Cities = new SelectList(this.citiesService.Read(), "Id", "Name")
                 },
 
-                CreateLanguageViewModel = new CreateLanguageViewModel
+                AddPersonLanguageViewModel = new AddPersonLanguageViewModel
                 {
                     Languages = new SelectList(this.languagesService.Read(), "Id", "Name")
                 },
@@ -103,6 +103,55 @@ namespace MVCAssignments.Controllers
                     this.peopleService.FindPerson(id)
                 };
             }
+
+            return PartialView("_PersonDetailsPartial", this.peopleViewModel);
+        }
+
+        public IActionResult AddPersonLanguage(int personId, int languageId)
+        {
+            if (this.peopleService.FindPerson(personId) == null ||
+                this.languagesService.FindLanguage(languageId) == null ||
+                this.peopleService.FindPersonLanguage(personId, languageId) != null)
+            {
+                return Json(
+                   new
+                   {
+                       errorMessage = "400 Bad Request: One or more parameters are not valid."
+                   }
+                   );
+            }
+
+            this.peopleService.AddPersonLanguage(personId, languageId);
+
+            this.peopleViewModel.People = new List<Person>
+                {
+                    this.peopleService.FindPerson(personId)
+                };
+
+            return PartialView("_PersonDetailsPartial", this.peopleViewModel);
+        }
+
+        public IActionResult DeletePersonLanguage(int personId, int languageId)
+        {
+            if (this.peopleService.FindPersonLanguage(personId, languageId) != null)
+            {
+                this.peopleService.DeletePersonLanguage(personId, languageId);
+            }
+            else
+            {
+                return Json(
+                   new
+                   {
+                       errorMessage = "400 Bad Request: One or more parameters are not valid."
+                   }
+                   );
+            }
+
+            this.peopleViewModel.People = new List<Person>
+                {
+                    this.peopleService.FindPerson(personId)
+                };
+
 
             return PartialView("_PersonDetailsPartial", this.peopleViewModel);
         }

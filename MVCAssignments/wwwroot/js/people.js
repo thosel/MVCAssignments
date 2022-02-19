@@ -129,6 +129,77 @@ class People {
         });
     }
 
+    deletePersonLanguage(personId, languageId) {
+        this.action = "deletePersonLanguage";
+        return new Promise((resolve) => {
+            const config = {
+                method: 'POST',
+                uri: `/PeopleAjax/DeletePersonLanguage?personId=${personId}&languageId=${languageId}`,
+            };
+
+            this.fetchRequest(config)
+                .then((response) => {
+                    this.response = response;
+                    if (response.errorMessage) {
+                        this.status = "failure";
+                        this.statusMessage = "Failed to delete the person language!";
+                        throw new Error();
+                    } else {
+                        this.status = "success";
+                        this.statusMessage = "The person language was deleted successfully!";
+                        return response.text();
+                    }
+                })
+                .then((responseString) => {
+                    return this.parseHtmlDocumentFromString(responseString);
+                })
+                .then((htmlDocument) => {
+                    resolve(htmlDocument);
+                })
+                .catch(() => {
+                    this.updateView(undefined);
+                });
+        });
+    }
+
+    addPersonLanguage() {
+        event.preventDefault();
+
+        let personId = document.querySelector("#AddPersonLanguageViewModel_PersonId").value;
+        let languageId = document.querySelector("#AddPersonLanguageViewModel_LanguageId").value;
+
+        this.action = "addPersonLanguage";
+        return new Promise((resolve) => {
+            const config = {
+                method: 'POST',
+                uri: `/PeopleAjax/AddPersonLanguage?personId=${personId}&languageId=${languageId}`,
+            };
+
+            this.fetchRequest(config)
+                .then((response) => {
+                    this.response = response;
+                    if (response.errorMessage) {
+                        this.status = "failure";
+                        this.statusMessage = "Failed to add the person language!";
+                        throw new Error();
+                    } else {
+                        this.status = "success";
+                        this.statusMessage = "The person language was added successfully!";
+                        return response.text();
+                    }
+                })
+                .then((responseString) => {
+                    return this.parseHtmlDocumentFromString(responseString);
+                })
+                .then((htmlDocument) => {
+                    resolve(htmlDocument);
+                })
+                .catch(() => {
+                    this.updateView(undefined);
+                });
+        });
+    }
+
     fetchRequest(config) {
         return new Promise((resolve, reject) => {
             window.fetch(config.uri, config)
@@ -282,6 +353,12 @@ class People {
         if (htmlDocument !== undefined) {
             let body = htmlDocument.querySelector("body");
             this.containerElement.innerHTML = body.innerHTML;
+        }
+
+        if (document.querySelectorAll("#delete-person-language-link-div").length > 0) {
+            document.querySelectorAll("#delete-person-language-link-div").forEach((link) => {
+                link.classList.remove("d-none");
+            });
         }
     }
 }

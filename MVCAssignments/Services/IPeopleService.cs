@@ -14,5 +14,11 @@ namespace MVCAssignments.Services
         public void CreatePerson(Person person);
 
         public void DeletePerson(int id);
+
+        public void AddPersonLanguage(int personId, int languageId);
+
+        public PersonLanguage FindPersonLanguage(int personId, int languageId);
+
+        public void DeletePersonLanguage(int personId, int languageId);
     }
 }

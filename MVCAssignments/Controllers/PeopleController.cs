@@ -22,16 +22,18 @@ namespace MVCAssignments.Controllers
 
             this.peopleViewModel = new PeopleViewModel
             {
-                CreatePersonViewModel = new CreatePersonViewModel()
-            };
-            this.peopleViewModel.CreatePersonViewModel.Cities = new SelectList(this.citiesService.Read(), "Id", "Name");
+                CreatePersonViewModel = new CreatePersonViewModel
+                {
+                    Cities = new SelectList(this.citiesService.Read(), "Id", "Name")
+                },
 
-            this.peopleViewModel.CreateLanguageViewModel = new CreateLanguageViewModel
-            {
-                Languages = new SelectList(this.languagesService.Read(), "Id", "Name")
-            };
+                AddPersonLanguageViewModel = new AddPersonLanguageViewModel
+                {
+                    Languages = new SelectList(this.languagesService.Read(), "Id", "Name")
+                },
 
-            this.peopleViewModel.People = this.peopleService.Read();
+                People = this.peopleService.Read()
+            };
         }
 
         public IActionResult GetPeople()
@@ -104,6 +106,55 @@ namespace MVCAssignments.Controllers
                     this.peopleService.FindPerson(id)
                 };
                 TempData["get-person-details"] = "success";
+            }
+
+            return View("/Views/People/People.cshtml", this.peopleViewModel);
+        }
+
+        public IActionResult AddPersonLanguage(AddPersonLanguageViewModel addPersonLanguageViewModel)
+        {
+            if (this.peopleService.FindPerson(addPersonLanguageViewModel.PersonId) == null ||
+                this.languagesService.FindLanguage(addPersonLanguageViewModel.LanguageId) == null ||
+                this.peopleService.FindPersonLanguage(addPersonLanguageViewModel.PersonId, addPersonLanguageViewModel.LanguageId) != null)
+            {
+                TempData["add-person-language"] = "failure";
+            }
+            else
+            {
+                this.peopleService.AddPersonLanguage(addPersonLanguageViewModel.PersonId, addPersonLanguageViewModel.LanguageId);
+                TempData["add-person-language"] = "success";
+            }
+
+            this.peopleViewModel.People = new List<Person>
+                {
+                    this.peopleService.FindPerson(addPersonLanguageViewModel.PersonId)
+                };
+
+            return View("/Views/People/People.cshtml", this.peopleViewModel);
+        }
+
+        public IActionResult DeletePersonLanguage(int personId, int languageId)
+        {
+            if (this.peopleService.FindPersonLanguage(personId, languageId) != null)
+            {
+                this.peopleService.DeletePersonLanguage(personId, languageId);
+                TempData["delete-person-language"] = "success";
+            }
+            else
+            {
+                TempData["delete-person-language"] = "failure";
+            }
+
+            if (this.peopleService.FindPerson(personId) != null)
+            {
+                this.peopleViewModel.People = new List<Person>
+                {
+                    this.peopleService.FindPerson(personId)
+                };
+            }
+            else
+            {
+                TempData["delete-person-language"] = "error";
             }
 
             return View("/Views/People/People.cshtml", this.peopleViewModel);
