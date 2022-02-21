@@ -43,6 +43,9 @@ namespace MVCAssignments
 
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseAuthentication();
+
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
