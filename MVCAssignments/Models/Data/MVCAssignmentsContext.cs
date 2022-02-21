@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace MVCAssignments.Models.Data
 {
-    public class MVCAssignmentsContext : DbContext
+    public class MVCAssignmentsContext : IdentityDbContext<ApplicationUser>
     {
         public MVCAssignmentsContext(DbContextOptions<MVCAssignmentsContext> options) : base(options) { }
         public DbSet<Country> Countries { get; set; }
