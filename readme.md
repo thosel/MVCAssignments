@@ -20,5 +20,7 @@ See [Entity Framework, Assignment 2 - Many to One.pdf](./Assignments/Entity%20Fr
 <br />
 See [Entity Framework, Assignment 3 - Many to Many.pdf](./Assignments/Entity%20Framework,%20Assignment%203%20-%20Many%20to%20Many.pdf) for further information.
 
+See [Identity, Assignment - Identity.pdf](./Assignments/Identity,%20Assignment%20-%20Identity.pdf) for further information.
+
 ---
 Lexicon webb development course
