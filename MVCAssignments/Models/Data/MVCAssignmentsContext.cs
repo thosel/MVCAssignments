@@ -14,6 +14,8 @@ namespace MVCAssignments.Models.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<PersonLanguage>().HasKey(personLanguage => new { personLanguage.PersonId, personLanguage.LanguageId });
 
             modelBuilder.Entity<PersonLanguage>()
