@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MVCAssignments.Models;
 using MVCAssignments.Services;
 using MVCAssignments.ViewModels;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 
 namespace MVCAssignments.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CountriesController : Controller
     {
         private readonly ICountriesService countriesService;

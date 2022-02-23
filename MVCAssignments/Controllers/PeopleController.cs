@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAssignments.Models;
 using MVCAssignments.Services;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 
 namespace MVCAssignments.Controllers
 {
+    [Authorize]
     public class PeopleController : Controller
     {
         private readonly IPeopleService peopleService;

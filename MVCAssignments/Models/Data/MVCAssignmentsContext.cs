@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Security.Cryptography;
 
 namespace MVCAssignments.Models.Data
 {
@@ -12,9 +15,50 @@ namespace MVCAssignments.Models.Data
         public DbSet<Language> Languages { get; set; }
         public DbSet<PersonLanguage> PersonLanguages { get; set; }
 
+
+        public DbSet<ApplicationUser> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            string adminRoleId = Guid.NewGuid().ToString();
+            string adminUserId = Guid.NewGuid().ToString();
+
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+            {
+                Id = adminRoleId,
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            });
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "User",
+                NormalizedName = "USER"
+            });
+
+            PasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
+
+
+            modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
+            {
+                Id = adminUserId,
+                UserName = "admin.A1@admin.com",
+                NormalizedUserName = "ADMIN.A1@ADMIN.COM",
+                Email = "admin.A1@admin.com",
+                NormalizedEmail = "ADMIN.A1@ADMIN.COM",
+                PasswordHash = passwordHasher.HashPassword(null, "admin.A1@admin.com"),
+                FirstName = "Admin",
+                LastName = "Adamsson",
+                BirthDate = DateTime.UtcNow.Date
+            });
+            
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                RoleId = adminRoleId,
+                UserId = adminUserId
+            });
 
             modelBuilder.Entity<PersonLanguage>().HasKey(personLanguage => new { personLanguage.PersonId, personLanguage.LanguageId });
 

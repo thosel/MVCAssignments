@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MVCAssignments.Models;
 using MVCAssignments.Models.Data;
 using MVCAssignments.Services;
+using System.Threading.Tasks;
 
 namespace MVCAssignments
 {
@@ -26,10 +30,18 @@ namespace MVCAssignments
             services.AddSession();
             services.AddDbContext<MVCAssignmentsContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+                    .AddDefaultUI()
+                    .AddDefaultTokenProviders()
+                    .AddEntityFrameworkStores<MVCAssignmentsContext>();
+
             services.AddScoped<IPeopleService, PeopleService>();
             services.AddScoped<ICitiesService, CitiesService>();
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<ILanguagesService, LanguagesService>();
+
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,11 +57,16 @@ namespace MVCAssignments
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet(
+                    "/Identity/Account/Manage", 
+                    context => Task.Factory.StartNew(() => context.Response.Redirect("/Home/Index", true, true)));
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"
@@ -66,6 +83,8 @@ namespace MVCAssignments
                     pattern: "/GuessingGame",
                     defaults: new { controller = "Games", action = "GuessingGame" }
                     );
+
+                endpoints.MapRazorPages();
             });
         }
     }
