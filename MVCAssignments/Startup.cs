@@ -40,6 +40,7 @@ namespace MVCAssignments
             services.AddScoped<ICitiesService, CitiesService>();
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<ILanguagesService, LanguagesService>();
+            services.AddScoped<IApplicationUsersService, ApplicationUsersService>();
 
             services.AddRazorPages();
         }
@@ -64,7 +65,7 @@ namespace MVCAssignments
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet(
-                    "/Identity/Account/Manage", 
+                    "/Identity/Account/Manage",
                     context => Task.Factory.StartNew(() => context.Response.Redirect("/Home/Index", true, true)));
 
                 endpoints.MapControllerRoute(

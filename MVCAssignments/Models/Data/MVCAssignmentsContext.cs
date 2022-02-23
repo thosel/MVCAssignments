@@ -40,7 +40,6 @@ namespace MVCAssignments.Models.Data
 
             PasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
 
-
             modelBuilder.Entity<ApplicationUser>().HasData(new ApplicationUser
             {
                 Id = adminUserId,

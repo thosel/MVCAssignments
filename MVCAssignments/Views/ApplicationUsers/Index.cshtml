@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Users</h1>
+
+@*<a asp-action="Create">Create role</a>
+    ||
+    <a asp-action="AddUserToRole">Add user to role</a>*@
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>UserName</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var applicationUser in Model)
+        {
+            <tr>
+                <td>@applicationUser.Id</td>
+                <td>@applicationUser.UserName</td>
+                <td><a asp-controller="ApplicationUsers" asp-action="DeleteApplicationUser" asp-route-applicationUserId="@applicationUser.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
