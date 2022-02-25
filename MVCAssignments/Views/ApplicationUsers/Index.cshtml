@@ -1,15 +1,10 @@
 ﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
 
-
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Users</h1>
-
-@*<a asp-action="Create">Create role</a>
-    ||
-    <a asp-action="AddUserToRole">Add user to role</a>*@
 
 <table class="table table-responsive">
     <thead>
@@ -17,15 +12,22 @@
             <th>Id</th>
             <th>UserName</th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var applicationUser in Model)
+        @foreach (var user in Model)
         {
             <tr>
-                <td>@applicationUser.Id</td>
-                <td>@applicationUser.UserName</td>
-                <td><a asp-controller="ApplicationUsers" asp-action="DeleteApplicationUser" asp-route-applicationUserId="@applicationUser.Id">Delete</a></td>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td><a asp-controller="ApplicationUsers" asp-action="UpdateUser" asp-route-userId="@user.Id">Update</a></td>
+                <td>
+                    @if (!user.UserName.Equals("admin.A1@admin.com"))
+                    {
+                        <a asp-controller="ApplicationUsers" asp-action="DeleteUser" asp-route-userId="@user.Id">Delete</a>
+                    }
+                </td>
             </tr>
         }
     </tbody>

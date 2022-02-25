@@ -1,0 +1,41 @@
+﻿@model UpdateApplicationUserViewModel
+
+@{
+    ViewData["Title"] = "Create user";
+}
+
+<h1>Update user "@Model.UserName"</h1>
+
+<td><a asp-controller="ApplicationUsers" asp-action="Index">Go to users list</a></td>
+
+<hr />
+
+<form asp-controller="ApplicationUsers" asp-action="UpdateUser" method="post">
+    <input asp-for="@Model.UserId" type="hidden" />
+    <div class="form-group">
+        <label asp-for="@Model.Email"></label>
+        <input asp-for="@Model.Email" class="form-control" />
+        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+    </div>
+
+    @foreach (var key in Model.UserRoles.Keys)
+    {
+        if (@Model.UserName.Equals("admin.A1@admin.com") && @key.Equals("Admin"))
+        {
+            <input asp-for="@Model.UserRoles[key]" disabled />
+            <label for="UserRoles_Admin_">@key</label>
+        }
+        else
+        {
+            <input asp-for="@Model.UserRoles[key]" />
+            <label for="UserRoles_Admin_">@key</label>
+        }
+    }
+
+    <button id="create-button" type="submit" class="form-control form-control-sm btn btn-success mb-2">
+        Submit
+    </button>
+    <button type="reset" class="form-control form-control-sm btn btn-danger">
+        Reset
+    </button>
+</form>

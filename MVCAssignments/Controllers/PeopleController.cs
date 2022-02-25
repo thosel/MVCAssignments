@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace MVCAssignments.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     public class PeopleController : Controller
     {
         private readonly IPeopleService peopleService;

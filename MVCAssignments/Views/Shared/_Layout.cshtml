@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using MVCAssignments.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -51,15 +57,21 @@
                     <li>
                         @Html.ActionLink("Guessing game", "GuessingGame", "Games", null, new { @class = "nav-link" })
                     </li>
-                    <li class="dropdown ">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">Database<b class="caret"></b></a>
-                        <ul class="dropdown-menu dropdown-content bg-dark">
-                            @Html.ActionLink("Countries", "GetCountries", "Countries", null, new { @class = "nav-link dropdown-item" })
-                            @Html.ActionLink("Cities", "GetCities", "Cities", null, new { @class = "nav-link dropdown-item" })
-                            @Html.ActionLink("People", "GetPeople", "People", null, new { @class = "nav-link dropdown-item" })
-                            @Html.ActionLink("Languages", "GetLanguages", "Languages", null, new { @class = "nav-link dropdown-item" })
-                        </ul>
-                    </li>
+                    @if (SignInManager.IsSignedIn(User) && (User.IsInRole("User") || User.IsInRole("Admin")))
+                    {
+                        <li class="dropdown ">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">Database<b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-content bg-dark">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    @Html.ActionLink("Countries", "GetCountries", "Countries", null, new { @class = "nav-link dropdown-item" })
+                                    @Html.ActionLink("Cities", "GetCities", "Cities", null, new { @class = "nav-link dropdown-item" })
+                                    @Html.ActionLink("Languages", "GetLanguages", "Languages", null, new { @class = "nav-link dropdown-item" })
+                                }
+                                @Html.ActionLink("People", "GetPeople", "People", null, new { @class = "nav-link dropdown-item" })
+                            </ul>
+                        </li>
+                    }
                     <partial name="_LoginPartial" />
                 </ul>
             </div>
