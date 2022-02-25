@@ -63,23 +63,26 @@ namespace MVCAssignments.Services
         {
             if (applicationUser != null)
             {
-                await this.applicationUserManager.UpdateAsync(applicationUser);
-            }
-
-            if (applicationUserRoles != null)
-            {
-                foreach (KeyValuePair<string, bool> applicationUserRole in applicationUserRoles)
+                if (await FindApplicationUserAsync(applicationUser.Id) != null)
                 {
-                    bool isApplicationUserInRole =
-                        await this.applicationUserManager.IsInRoleAsync(applicationUser, applicationUserRole.Key);
+                    await this.applicationUserManager.UpdateAsync(applicationUser);
 
-                    if (isApplicationUserInRole && !applicationUserRole.Value)
+                    if (applicationUserRoles != null)
                     {
-                        await this.applicationUserManager.RemoveFromRoleAsync(applicationUser, applicationUserRole.Key);
-                    }
-                    else if (!isApplicationUserInRole && applicationUserRole.Value)
-                    {
-                        await this.applicationUserManager.AddToRoleAsync(applicationUser, applicationUserRole.Key);
+                        foreach (KeyValuePair<string, bool> applicationUserRole in applicationUserRoles)
+                        {
+                            bool isApplicationUserInRole =
+                                await this.applicationUserManager.IsInRoleAsync(applicationUser, applicationUserRole.Key);
+
+                            if (isApplicationUserInRole && !applicationUserRole.Value)
+                            {
+                                await this.applicationUserManager.RemoveFromRoleAsync(applicationUser, applicationUserRole.Key);
+                            }
+                            else if (!isApplicationUserInRole && applicationUserRole.Value)
+                            {
+                                await this.applicationUserManager.AddToRoleAsync(applicationUser, applicationUserRole.Key);
+                            }
+                        }
                     }
                 }
             }
