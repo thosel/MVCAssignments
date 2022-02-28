@@ -12,34 +12,40 @@
         <strong>The person was created successfully!</strong>
     </div>
 }
+else if ((string)TempData["create-person-city-non-existing"] == "failure")
+{
+    <div class="alert alert-success">
+        <strong>Failed to create the person because the city didn't exist!</strong>
+    </div>
+}
 else if ((string)TempData["update-person"] == "success")
 {
     <div class="alert alert-success">
         <strong>The person was updated successfully!</strong>
     </div>
 }
+else if ((string)TempData["update-person-person-non-existing"] == "failure")
+{
+    <div class="alert alert-success">
+        <strong>Failed to update the person because the person didn't exist!</strong>
+    </div>
+}
+else if ((string)TempData["update-person-city-non-existing"] == "failure")
+{
+    <div class="alert alert-success">
+        <strong>Failed to update the person because the city didn't exist!</strong>
+    </div>
+}
 else if ((string)TempData["delete-person"] == "success")
 {
     <div class="alert alert-success">
         <strong>The person was successfully deleted!</strong>
     </div>
 }
-else if ((string)TempData["delete-person-city-non-existing"] == "failure")
+else if ((string)TempData["delete-person-person-non-existing"] == "failure")
 {
     <div class="alert alert-danger">
-        <strong>Failed to delete the person because the city didn't exist!</strong>
-    </div>
-}
-else if ((string)TempData["delete-person"] == "success")
-{
-    <div class="alert alert-success">
-        <strong>The person was successfully deleted!</strong>
-    </div>
-}
-else if ((string)TempData["delete-person"] == "failure")
-{
-    <div class="alert alert-danger">
-        <strong>Failed to delete the person!</strong>
+        <strong>Failed to delete the person because the person didn't exist!</strong>
     </div>
 }
 

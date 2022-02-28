@@ -45,43 +45,34 @@ namespace MVCAssignments.Controllers
                 int.TryParse(createPersonViewModel.CityId, out int cityId))
             {
                 City city = this.citiesService.FindCity(cityId);
-                int countryId = this.citiesService.FindCity(cityId).Country.Id;
 
                 if (city != null)
                 {
-                    if (city.Country.Id == countryId)
-                    {
-                        Person person = new Person(
+                    Person person = new Person(
                                             createPersonViewModel.Name,
                                             createPersonViewModel.Phone,
                                             city
                                             );
 
-                        int personId = this.peopleService.CreatePerson(person);
-                        TempData["create-person"] = "success";
+                    int personId = this.peopleService.CreatePerson(person);
+                    TempData["create-person"] = "success";
 
-                        if (this.peopleService.FindPerson(personId) != null)
+                    if (this.peopleService.FindPerson(personId) != null)
+                    {
+                        if (createPersonViewModel.LanguageIds != null)
                         {
-                            if (createPersonViewModel.LanguageIds != null)
+                            foreach (var languageId in createPersonViewModel.LanguageIds)
                             {
-                                foreach (var languageId in createPersonViewModel.LanguageIds)
+                                if (int.TryParse(languageId, out int parsedLanguageId))
                                 {
-                                    if (int.TryParse(languageId, out int parsedLanguageId))
+                                    if (this.languagesService.FindLanguage(parsedLanguageId) != null ||
+                                    this.peopleService.FindPersonLanguage(personId, parsedLanguageId) == null)
                                     {
-                                        if (this.languagesService.FindLanguage(parsedLanguageId) != null ||
-                                        this.peopleService.FindPersonLanguage(personId, parsedLanguageId) == null)
-                                        {
-                                            this.peopleService.CreatePersonLanguage(personId, parsedLanguageId);
-                                        }
+                                        this.peopleService.CreatePersonLanguage(personId, parsedLanguageId);
                                     }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        TempData["create-person-country-mismatch"] = "failure";
-                        return RedirectToAction(nameof(Index), "People");
                     }
                 }
                 else
@@ -203,58 +194,49 @@ namespace MVCAssignments.Controllers
                 int.TryParse(updatePersonViewModel.CityId, out int cityId))
             {
                 City city = this.citiesService.FindCity(cityId);
-                int countryId = this.citiesService.FindCity(cityId).Country.Id;
 
                 if (city != null)
                 {
-                    if (city.Country.Id == countryId)
-                    {
-                        Person person = new Person(
+                    Person person = new Person(
                                             updatePersonViewModel.Name,
                                             updatePersonViewModel.Phone,
                                             city
                                             );
-                        person.Id = updatePersonViewModel.Id;
+                    person.Id = updatePersonViewModel.Id;
 
-                        this.peopleService.UpdatePerson(person);
-                        TempData["update-person"] = "success";
+                    this.peopleService.UpdatePerson(person);
+                    TempData["update-person"] = "success";
 
-                        if (this.peopleService.FindPerson(person.Id) != null)
+                    if (this.peopleService.FindPerson(person.Id) != null)
+                    {
+                        if (updatePersonViewModel.LanguageIds != null)
                         {
-                            if (updatePersonViewModel.LanguageIds != null)
+                            List<Language> allLanguages = this.languagesService.Read();
+                            foreach (var language in allLanguages)
                             {
-                                List<Language> allLanguages = this.languagesService.Read();
-                                foreach (var language in allLanguages)
+                                if (this.peopleService.FindPersonLanguage(person.Id, language.Id) != null)
                                 {
-                                    if (this.peopleService.FindPersonLanguage(person.Id, language.Id) != null)
-                                    {
-                                        this.peopleService.DeletePersonLanguage(person.Id, language.Id);
-                                    }
+                                    this.peopleService.DeletePersonLanguage(person.Id, language.Id);
                                 }
+                            }
 
-                                foreach (var languageId in updatePersonViewModel.LanguageIds)
+                            foreach (var languageId in updatePersonViewModel.LanguageIds)
+                            {
+                                if (int.TryParse(languageId, out int parsedLanguageId))
                                 {
-                                    if (int.TryParse(languageId, out int parsedLanguageId))
+                                    if (this.languagesService.FindLanguage(parsedLanguageId) != null ||
+                                    this.peopleService.FindPersonLanguage(person.Id, parsedLanguageId) == null)
                                     {
-                                        if (this.languagesService.FindLanguage(parsedLanguageId) != null ||
-                                        this.peopleService.FindPersonLanguage(person.Id, parsedLanguageId) == null)
-                                        {
-                                            this.peopleService.CreatePersonLanguage(person.Id, parsedLanguageId);
-                                        }
+                                        this.peopleService.CreatePersonLanguage(person.Id, parsedLanguageId);
                                     }
                                 }
                             }
                         }
                     }
-                    else
-                    {
-                        TempData["create-person-country-mismatch"] = "failure";
-                        return RedirectToAction(nameof(Index), "People");
-                    }
                 }
                 else
                 {
-                    TempData["create-person-city-non-existing"] = "failure";
+                    TempData["update-person-city-non-existing"] = "failure";
                     return RedirectToAction(nameof(Index), "People");
                 }
             }
@@ -309,7 +291,7 @@ namespace MVCAssignments.Controllers
             }
             else
             {
-                TempData["delete-person"] = "failure";
+                TempData["delete-person-person-non-existing"] = "failure";
             }
 
             return RedirectToAction(nameof(Index), "People");
