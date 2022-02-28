@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using MVCAssignments.Models;
 using MVCAssignments.Services;
 using MVCAssignments.ViewModels;
-using System.Collections.Generic;
 
 namespace MVCAssignments.Controllers
 {
@@ -11,34 +10,19 @@ namespace MVCAssignments.Controllers
     public class CountriesController : Controller
     {
         private readonly ICountriesService countriesService;
-        private readonly CountriesViewModel countriesViewModel;
 
         public CountriesController(ICountriesService countriesService)
         {
             this.countriesService = countriesService;
-
-            this.countriesViewModel = new CountriesViewModel
-            {
-                CreateCountryViewModel = new CreateCountryViewModel(),
-
-                Countries = this.countriesService.Read()
-            };
         }
 
-        public IActionResult GetCountries()
-        {
-            return View("/Views/Countries/Countries.cshtml", this.countriesViewModel);
-        }
+        #region Create
 
-        [HttpPost]
-        public IActionResult GetCountries(string searchString, bool caseSensitive = false)
+        [HttpGet]
+        public IActionResult CreateCountry()
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                this.countriesViewModel.Countries = this.countriesService.FindCountries(searchString, caseSensitive);
-            }
-
-            return View("/Views/Countries/Countries.cshtml", this.countriesViewModel);
+            CreateCountryViewModel createCountryViewModel = new CreateCountryViewModel();
+            return View(createCountryViewModel);
         }
 
         [HttpPost]
@@ -48,52 +32,130 @@ namespace MVCAssignments.Controllers
             {
                 Country country = new Country(createCountryViewModel.Name);
 
-                this.countriesService.CreateCountry(country);
-
-                TempData["create-country"] = "success";
+                if (this.countriesService.FindCountry(country.Name) == null)
+                {
+                    this.countriesService.CreateCountry(country);
+                    TempData["create-country"] = "success";
+                }
+                else
+                {
+                    TempData["create-country-country-existed"] = "failure";
+                    return View(createCountryViewModel);
+                }
             }
             else
             {
                 TempData["create-country"] = "failure";
-                this.countriesViewModel.Countries = this.countriesService.Read();
-                return View("/Views/Countries/Countries.cshtml", this.countriesViewModel);
+                return View(createCountryViewModel);
             }
 
-            return RedirectToAction(nameof(GetCountries), "Countries");
+            return RedirectToAction(nameof(Index), "Countries");
         }
 
-        public IActionResult DeleteCountry(int id)
+        #endregion
+
+        #region Read
+
+        [HttpGet]
+        public IActionResult Index()
         {
-            if (this.countriesService.FindCountry(id) != null)
+            CountriesViewModel countriesViewModel = new CountriesViewModel
             {
-                this.countriesService.DeleteCountry(id);
+                Countries = this.countriesService.Read()
+            };
+
+            return View(countriesViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Index(string searchString, bool caseSensitive = false)
+        {
+            CountriesViewModel countriesViewModel = new CountriesViewModel();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                countriesViewModel.Countries = this.countriesService.FindCountries(searchString, caseSensitive);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index), "Countries");
+            }
+
+            return View(countriesViewModel);
+        }
+
+        #endregion
+
+        #region Update
+
+        [HttpGet]
+        public IActionResult UpdateCountry(int countryId)
+        {
+            UpdateCountryViewModel updateCountryViewModel = new UpdateCountryViewModel();
+            Country country = this.countriesService.FindCountry(countryId);
+
+            if (country != null)
+            {
+                updateCountryViewModel.Id = country.Id;
+                updateCountryViewModel.Name = country.Name;
+            }
+            else
+            {
+                TempData["update-country-country-non-existing"] = "failure";
+                return RedirectToAction(nameof(Index), "Countries");
+            }
+
+            return View(updateCountryViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateCountry(UpdateCountryViewModel updateCountryViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Country country = this.countriesService.FindCountry(updateCountryViewModel.Id);
+
+                if (country != null)
+                {
+                    country.Id = updateCountryViewModel.Id;
+                    country.Name = updateCountryViewModel.Name;
+                    this.countriesService.UpdateCountry(country);
+                    TempData["update-country"] = "success";
+                }
+                else
+                {
+                    TempData["update-country-country-non-existing"] = "failure";
+                    return RedirectToAction(nameof(Index), "Countries");
+                }
+            }
+            else
+            {
+                TempData["update-country"] = "failure";
+                return View(updateCountryViewModel);
+            }
+
+            return RedirectToAction(nameof(Index), "Countries");
+        }
+
+        #endregion
+
+        #region Delete
+
+        public IActionResult DeleteCountry(int countryId)
+        {
+            if (this.countriesService.FindCountry(countryId) != null)
+            {
+                this.countriesService.DeleteCountry(countryId);
                 TempData["delete-country"] = "success";
             }
             else
             {
-                TempData["delete-country"] = "failure";
+                TempData["delete-country-country-non-existing"] = "failure";
             }
 
-            return RedirectToAction(nameof(GetCountries), "Countries");
+            return RedirectToAction(nameof(Index), "Countries");
         }
 
-        public IActionResult GetCountryDetails(int id)
-        {
-            if (this.countriesService.FindCountry(id) == null)
-            {
-                TempData["get-country-details"] = "failure";
-                return View("/Views/Countries/Countries.cshtml", this.countriesViewModel);
-            }
-            else
-            {
-                this.countriesViewModel.Countries = new List<Country>
-                {
-                    this.countriesService.FindCountry(id)
-                };
-                TempData["get-country-details"] = "success";
-            }
-
-            return View("/Views/Countries/Countries.cshtml", this.countriesViewModel);
-        }
+        #endregion
     }
 }

@@ -1,0 +1,74 @@
+﻿@model CitiesViewModel
+
+@{
+    ViewData["Title"] = "Cities";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["create-city"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The city was created successfully!</strong>
+    </div>
+}
+else if ((string)TempData["update-city"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The city was updated successfully!</strong>
+    </div>
+}
+else if ((string)TempData["delete-city"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The city was successfully deleted!</strong>
+    </div>
+}
+else if ((string)TempData["delete-city-city-non-existing"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to delete the city because the city didn't exist!</strong>
+    </div>
+}
+
+<a asp-controller="Cities" asp-action="CreateCity" class="link-primary">Create a new city</a>
+
+<hr />
+
+<form asp-controller="Cities" asp-action="Index" method="post">
+    <label for="search-text" class="control-label">Search text:</label>
+    <div class="input-group">
+        <input type="text" name="searchString" />
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true" />
+        <label for="case-sensitive">Case sensitive</label>
+    </div>
+</form>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>City</th>
+            <th>Country</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var city in Model.Cities)
+        {
+            <tr>
+                <td>@city.Id</td>
+                <td>@city.Name</td>
+                <td>@city.Country.Name</td>
+                <td><a asp-controller="Cities" asp-action="UpdateCity" asp-route-cityId="@city.Id">Update</a></td>
+                <td><a asp-controller="Cities" asp-action="DeleteCity" asp-route-cityId="@city.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

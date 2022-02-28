@@ -64,11 +64,11 @@
                             <ul class="dropdown-menu dropdown-content bg-dark">
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    @Html.ActionLink("Countries", "GetCountries", "Countries", null, new { @class = "nav-link dropdown-item" })
-                                    @Html.ActionLink("Cities", "GetCities", "Cities", null, new { @class = "nav-link dropdown-item" })
-                                    @Html.ActionLink("Languages", "GetLanguages", "Languages", null, new { @class = "nav-link dropdown-item" })
+                                    @Html.ActionLink("Countries", "Index", "Countries", null, new { @class = "nav-link dropdown-item" })
+                                    @Html.ActionLink("Cities", "Index", "Cities", null, new { @class = "nav-link dropdown-item" })
+                                    @Html.ActionLink("Languages", "Index", "Languages", null, new { @class = "nav-link dropdown-item" })
                                 }
-                                @Html.ActionLink("People", "GetPeople", "People", null, new { @class = "nav-link dropdown-item" })
+                                @Html.ActionLink("People", "Index", "People", null, new { @class = "nav-link dropdown-item" })
                             </ul>
                         </li>
                     }

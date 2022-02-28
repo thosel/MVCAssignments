@@ -1,0 +1,78 @@
+﻿@model CountriesViewModel
+
+@{
+    ViewData["Title"] = "Countries";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["create-country"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The country was created successfully!</strong>
+    </div>
+}
+else if ((string)TempData["update-country"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The country was updated successfully!</strong>
+    </div>
+}
+else if ((string)TempData["create-country-country-non-existing"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to update the country because the country didn't exist!</strong>
+    </div>
+}
+else if ((string)TempData["delete-country"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The country was successfully deleted!</strong>
+    </div>
+}
+else if ((string)TempData["delete-country-country-non-existing"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to delete the country because the country didn't exist!</strong>
+    </div>
+}
+
+<a asp-controller="Countries" asp-action="CreateCountry" class="link-primary">Create a new country</a>
+
+<hr />
+
+<form asp-controller="Countries" asp-action="Index" method="post">
+    <label for="search-text" class="control-label">Search text:</label>
+    <div class="input-group">
+        <input type="text" name="searchString" />
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true" />
+        <label for="case-sensitive">Case sensitive</label>
+    </div>
+</form>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Country</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var country in Model.Countries)
+        {
+            <tr>
+                <td>@country.Id</td>
+                <td>@country.Name</td>
+                <td><a asp-controller="Countries" asp-action="UpdateCountry" asp-route-countryId="@country.Id">Update</a></td>
+                <td><a asp-controller="Countries" asp-action="DeleteCountry" asp-route-countryId="@country.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

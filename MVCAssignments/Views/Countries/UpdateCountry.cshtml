@@ -1,0 +1,33 @@
+﻿@model UpdateCountryViewModel
+
+@{
+    ViewData["Title"] = "Update country";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["update-country"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to update the country!</strong>
+    </div>
+}
+
+<a asp-controller="Countries" asp-action="Index" class="link-primary">Go back to countries</a>
+
+<hr />
+
+<form asp-controller="Countries" asp-action="UpdateCountry" method="post">
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="form-control form-control-sm btn btn-success mb-2">
+        Update country
+    </button>
+    <button type="reset" class="form-control form-control-sm btn btn-danger">
+        Reset
+    </button>
+</form>

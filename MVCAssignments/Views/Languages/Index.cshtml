@@ -1,0 +1,78 @@
+﻿@model LanguagesViewModel
+
+@{
+    ViewData["Title"] = "Languages";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["create-language"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The language was created successfully!</strong>
+    </div>
+}
+else if ((string)TempData["update-language"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The language was updated successfully!</strong>
+    </div>
+}
+else if ((string)TempData["create-language-language-non-existing"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to update the language because the language didn't exist!</strong>
+    </div>
+}
+else if ((string)TempData["delete-language"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The language was successfully deleted!</strong>
+    </div>
+}
+else if ((string)TempData["delete-language-language-non-existing"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to delete the language because the language didn't exist!</strong>
+    </div>
+}
+
+<a asp-controller="Languages" asp-action="CreateLanguage" class="link-primary">Create a new language</a>
+
+<hr />
+
+<form asp-controller="Languages" asp-action="Index" method="post">
+    <label for="search-text" class="control-label">Search text:</label>
+    <div class="input-group">
+        <input type="text" name="searchString" />
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true" />
+        <label for="case-sensitive">Case sensitive</label>
+    </div>
+</form>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Language</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var language in Model.Languages)
+        {
+            <tr>
+                <td>@language.Id</td>
+                <td>@language.Name</td>
+                <td><a asp-controller="Languages" asp-action="UpdateLanguage" asp-route-languageId="@language.Id">Update</a></td>
+                <td><a asp-controller="Languages" asp-action="DeleteLanguage" asp-route-languageId="@language.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

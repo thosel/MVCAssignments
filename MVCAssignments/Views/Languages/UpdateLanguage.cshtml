@@ -1,0 +1,33 @@
+﻿@model UpdateLanguageViewModel
+
+@{
+    ViewData["Title"] = "Update language";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["update-language"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to update the language!</strong>
+    </div>
+}
+
+<a asp-controller="Languages" asp-action="Index" class="link-primary">Go back to languages</a>
+
+<hr />
+
+<form asp-controller="Languages" asp-action="UpdateLanguage" method="post">
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="form-control form-control-sm btn btn-success mb-2">
+        Update language
+    </button>
+    <button type="reset" class="form-control form-control-sm btn btn-danger">
+        Reset
+    </button>
+</form>

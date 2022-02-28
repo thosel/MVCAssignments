@@ -1,0 +1,102 @@
+﻿@model PeopleViewModel
+
+@{
+    ViewData["Title"] = "People";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["create-person"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The person was created successfully!</strong>
+    </div>
+}
+else if ((string)TempData["update-person"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The person was updated successfully!</strong>
+    </div>
+}
+else if ((string)TempData["delete-person"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The person was successfully deleted!</strong>
+    </div>
+}
+else if ((string)TempData["delete-person-city-non-existing"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to delete the person because the city didn't exist!</strong>
+    </div>
+}
+else if ((string)TempData["delete-person"] == "success")
+{
+    <div class="alert alert-success">
+        <strong>The person was successfully deleted!</strong>
+    </div>
+}
+else if ((string)TempData["delete-person"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to delete the person!</strong>
+    </div>
+}
+
+<a asp-controller="People" asp-action="CreatePerson" class="link-primary">Create a new person</a>
+
+<hr />
+
+<form asp-controller="People" asp-action="Index" method="post">
+    <label for="search-text" class="control-label">Search text:</label>
+    <div class="input-group">
+        <input type="text" name="searchString" />
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="case-sensitive" name="caseSensitive" value="true" />
+        <label for="case-sensitive">Case sensitive</label>
+    </div>
+</form>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Person</th>
+            <th>Phone number</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Languages</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var person in Model.People)
+        {
+            <tr>
+                <td>@person.Id</td>
+                <td>@person.Name</td>
+                <td>@person.Phone</td>
+                <td>@person.City.Name</td>
+                <td>@person.City.Country.Name</td>
+                <td>
+                    @for (int i = 0; i < (person.PersonLanguages.Count - 1); i++)
+                    {
+                        @(person.PersonLanguages[i].Language.Name + ", ");
+                    }
+
+                    @if ((person.PersonLanguages.Count) > 0)
+                    {
+                        @person.PersonLanguages[person.PersonLanguages.Count - 1].Language.Name
+                    }
+                </td>
+                <td><a asp-controller="People" asp-action="UpdatePerson" asp-route-personId="@person.Id">Update</a></td>
+                <td><a asp-controller="People" asp-action="DeletePerson" asp-route-personId="@person.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

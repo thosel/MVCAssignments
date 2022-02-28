@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using MVCAssignments.Models;
 using MVCAssignments.Services;
 using MVCAssignments.ViewModels;
-using System.Collections.Generic;
 
 namespace MVCAssignments.Controllers
 {
@@ -11,34 +10,19 @@ namespace MVCAssignments.Controllers
     public class LanguagesController : Controller
     {
         private readonly ILanguagesService languagesService;
-        private readonly LanguagesViewModel languagesViewModel;
 
         public LanguagesController(ILanguagesService languagesService)
         {
             this.languagesService = languagesService;
-
-            this.languagesViewModel = new LanguagesViewModel
-            {
-                CreateLanguageViewModel = new CreateLanguageViewModel(),
-
-                Languages = this.languagesService.Read()
-            };
         }
 
-        public IActionResult GetLanguages()
-        {
-            return View("/Views/Languages/Languages.cshtml", this.languagesViewModel);
-        }
+        #region Create
 
-        [HttpPost]
-        public IActionResult GetLanguages(string searchString, bool caseSensitive = false)
+        [HttpGet]
+        public IActionResult CreateLanguage()
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                this.languagesViewModel.Languages = this.languagesService.FindLanguages(searchString, caseSensitive);
-            }
-
-            return View("/Views/Languages/Languages.cshtml", this.languagesViewModel);
+            CreateLanguageViewModel createLanguageViewModel = new CreateLanguageViewModel();
+            return View(createLanguageViewModel);
         }
 
         [HttpPost]
@@ -48,52 +32,130 @@ namespace MVCAssignments.Controllers
             {
                 Language language = new Language(createLanguageViewModel.Name);
 
-                this.languagesService.CreateLanguage(language);
-
-                TempData["create-language"] = "success";
+                if (this.languagesService.FindLanguage(language.Name) == null)
+                {
+                    this.languagesService.CreateLanguage(language);
+                    TempData["create-language"] = "success";
+                }
+                else
+                {
+                    TempData["create-language-language-existed"] = "failure";
+                    return View(createLanguageViewModel);
+                }
             }
             else
             {
                 TempData["create-language"] = "failure";
-                this.languagesViewModel.Languages = this.languagesService.Read();
-                return View("/Views/Languages/Languages.cshtml", this.languagesViewModel);
+                return View(createLanguageViewModel);
             }
 
-            return RedirectToAction(nameof(GetLanguages), "Languages");
+            return RedirectToAction(nameof(Index), "Languages");
         }
 
-        public IActionResult DeleteLanguage(int id)
+        #endregion
+
+        #region Read
+
+        [HttpGet]
+        public IActionResult Index()
         {
-            if (this.languagesService.FindLanguage(id) != null)
+            LanguagesViewModel languagesViewModel = new LanguagesViewModel
             {
-                this.languagesService.DeleteLanguage(id);
+                Languages = this.languagesService.Read()
+            };
+
+            return View(languagesViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Index(string searchString, bool caseSensitive = false)
+        {
+            LanguagesViewModel languagesViewModel = new LanguagesViewModel();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                languagesViewModel.Languages = this.languagesService.FindLanguages(searchString, caseSensitive);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index), "Languages");
+            }
+
+            return View(languagesViewModel);
+        }
+
+        #endregion
+
+        #region Update
+
+        [HttpGet]
+        public IActionResult UpdateLanguage(int languageId)
+        {
+            UpdateLanguageViewModel updateLanguageViewModel = new UpdateLanguageViewModel();
+            Language language = this.languagesService.FindLanguage(languageId);
+
+            if (language != null)
+            {
+                updateLanguageViewModel.Id = language.Id;
+                updateLanguageViewModel.Name = language.Name;
+            }
+            else
+            {
+                TempData["update-language-language-non-existing"] = "failure";
+                return RedirectToAction(nameof(Index), "Languages");
+            }
+
+            return View(updateLanguageViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateLanguage(UpdateLanguageViewModel updateLanguageViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Language language = this.languagesService.FindLanguage(updateLanguageViewModel.Id);
+
+                if (language != null)
+                {
+                    language.Id = updateLanguageViewModel.Id;
+                    language.Name = updateLanguageViewModel.Name;
+                    this.languagesService.UpdateLanguage(language);
+                    TempData["update-language"] = "success";
+                }
+                else
+                {
+                    TempData["update-language-language-non-existing"] = "failure";
+                    return RedirectToAction(nameof(Index), "Languages");
+                }
+            }
+            else
+            {
+                TempData["update-language"] = "failure";
+                return View(updateLanguageViewModel);
+            }
+
+            return RedirectToAction(nameof(Index), "Languages");
+        }
+
+        #endregion
+
+        #region Delete
+
+        public IActionResult DeleteLanguage(int languageId)
+        {
+            if (this.languagesService.FindLanguage(languageId) != null)
+            {
+                this.languagesService.DeleteLanguage(languageId);
                 TempData["delete-language"] = "success";
             }
             else
             {
-                TempData["delete-language"] = "failure";
+                TempData["delete-language-language-non-existing"] = "failure";
             }
 
-            return RedirectToAction(nameof(GetLanguages), "Languages");
+            return RedirectToAction(nameof(Index), "Languages");
         }
 
-        public IActionResult GetLanguageDetails(int id)
-        {
-            if (this.languagesService.FindLanguage(id) == null)
-            {
-                TempData["get-language-details"] = "failure";
-                return View("/Views/Languages/Languages.cshtml", this.languagesViewModel);
-            }
-            else
-            {
-                this.languagesViewModel.Languages = new List<Language>
-                {
-                    this.languagesService.FindLanguage(id)
-                };
-                TempData["get-language-details"] = "success";
-            }
-
-            return View("/Views/Languages/Languages.cshtml", this.languagesViewModel);
-        }
+        #endregion
     }
 }

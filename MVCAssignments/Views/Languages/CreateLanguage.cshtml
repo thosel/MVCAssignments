@@ -1,0 +1,38 @@
+﻿@model CreateLanguageViewModel
+
+@{
+    ViewData["Title"] = "Create language";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if ((string)TempData["create-language"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to create the language!</strong>
+    </div>
+}
+else if ((string)TempData["create-language-language-existed"] == "failure")
+{
+    <div class="alert alert-danger">
+        <strong>Failed to create the language because the language already existed!</strong>
+    </div>
+}
+
+<a asp-controller="Languages" asp-action="Index" class="link-primary">Go back to languages</a>
+
+<hr />
+
+<form asp-controller="Languages" asp-action="CreateLanguage" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="form-control form-control-sm btn btn-success mb-2">
+        Create language
+    </button>
+    <button type="reset" class="form-control form-control-sm btn btn-danger">
+        Reset
+    </button>
+</form>
