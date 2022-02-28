@@ -109,16 +109,27 @@ let citySelectSelectedUpdate = function () {
                     countrySelect.value = cityCountryId;
                 }
             });
+            people.getCountryCityIds(countrySelect.value)
+                .then((countryCityIds) => {
+                    citySelect.querySelectorAll("option").forEach((option) => {
+                        let isOptionSet = false
+                        countryCityIds.forEach((countryCityId) => {
+                            if (option.value > 0) {
+                                if (option.value == countryCityId) {
+                                    if (option.classList.contains("d-none")) {
+                                        option.classList.remove("d-none");
+                                    }
+                                    isOptionSet = true;
+                                } else if (!isOptionSet) {
+                                    if (!option.classList.contains("d-none")) {
+                                        option.classList.add("d-none");
+                                    }
+                                }
+                            }
+                        });
+                    });
+                });
         });
-    citySelect.querySelectorAll("option").forEach((option) => {
-        if (option.value > 0) {
-            if (option.value != citySelect.value) {
-                if (!option.classList.contains("d-none")) {
-                    option.classList.add("d-none");
-                }
-            }
-        }
-    });
 }
 
 let countrySelectSelectedUpdate = function () {
@@ -152,6 +163,23 @@ let countrySelectSelectedUpdate = function () {
                         }
                     }
                 }
+            });
+            citySelect.querySelectorAll("option").forEach((option) => {
+                let isOptionSet = false
+                countryCityIds.forEach((countryCityId) => {
+                    if (option.value > 0) {
+                        if (option.value == countryCityId) {
+                            if (option.classList.contains("d-none")) {
+                                option.classList.remove("d-none");
+                            }
+                            isOptionSet = true;
+                        } else if (!isOptionSet) {
+                            if (!option.classList.contains("d-none")) {
+                                option.classList.add("d-none");
+                            }
+                        }
+                    }
+                });
             });
         });
 }
