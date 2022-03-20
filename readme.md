@@ -22,5 +22,7 @@ See [Entity Framework, Assignment 3 - Many to Many.pdf](./Assignments/Entity%20F
 
 See [MVC Database, Assignment - Identity.pdf](./Assignments/MVC%20Database,%20Assignment%20-%20Identity.pdf) for further information.
 
+See [React, Assignment - Single-page CMS.pdf](./Assignments/React,%20Assignment%20-%20Single-page%20CMS.pdf) for further information.
+
 ---
 Lexicon webb development course

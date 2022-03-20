@@ -6,13 +6,16 @@
 
 	<ItemGroup>
 		<Compile Remove="Assignments\**" />
+		<Compile Remove="client-app\**" />
 		<Content Remove="Assignments\**" />
+		<Content Remove="client-app\**" />
 		<EmbeddedResource Remove="Assignments\**" />
+		<EmbeddedResource Remove="client-app\**" />
 		<None Remove="Assignments\**" />
+		<None Remove="client-app\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="client-app\src\NewFolder\" />
 		<Folder Include="Models\ViewModels\Languages\" />
 		<Folder Include="wwwroot\css\" />
 		<Folder Include="wwwroot\images\" />
