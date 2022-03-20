@@ -65,6 +65,10 @@ namespace MVCAssignments.Services
             {
                 return null;
             }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public City FindCity(string cityName)

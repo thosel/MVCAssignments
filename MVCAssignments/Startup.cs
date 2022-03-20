@@ -25,7 +25,9 @@ namespace MVCAssignments
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddMvc();
+
             services.AddHttpContextAccessor();
             services.AddSession();
             services.AddDbContext<MVCAssignmentsContext>(options =>
@@ -50,11 +52,15 @@ namespace MVCAssignments
         {
             if (env.IsDevelopment())
             {
+                app.UseCors(
+                options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+                );
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
 
             app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthentication();
