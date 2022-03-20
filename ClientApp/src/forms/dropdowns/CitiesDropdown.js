@@ -9,18 +9,25 @@ export default class CitiesDropdown extends Component {
         this.state = {
             selectOptions: [],
             id: "",
-            name: ''
+            name: "",
+            selectedValue: 0
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if (props.toggleSelectRefresh !== this.props.toggleSelectRefresh) {
+            this.setState({ selectedValue: 0 })
         }
     }
 
     async getOptions() {
-        const res = await axios.get('https://localhost:5001/PeopleAPI/GetCities')
-        const data = res.data
+        const response = await axios.get('https://localhost:5001/PeopleAPI/GetCities')
+        const responseData = response.data
 
-        const options = data.map(d => ({
-            "value": d.CityId,
-            "label": d.CityName,
-            "optgroup": d.CountryName
+        const options = responseData.map(data => ({
+            "value": data.CityId,
+            "label": data.CityName,
+            "optgroup": data.CountryName
         }))
 
         const groups = []
@@ -62,26 +69,20 @@ export default class CitiesDropdown extends Component {
 
     }
 
-    handleChange(e) {
-        this.setState({ id: e.value, name: e.label })
-        this.props.updateCityId(e.value)
-        /* this.props.updateCitySelectClear(this.clear) */
+    handleChange(event) {
+        this.setState({ id: event.value, name: event.label })
+        this.setState({ selectedValue: this.state.value })
+        this.props.updateCityId(event.value)
     }
 
     componentDidMount() {
         this.getOptions()
-        
     }
-
-    /* clear() {
-        //this.state.value.clear();
-        console.log("Funkar")
-    } */
 
     render() {
         return (
             <div>
-                <Select options={this.state.selectOptions} onChange={this.handleChange.bind(this)} />
+                <Select value={this.state.selectedValue} options={this.state.selectOptions} onChange={this.handleChange.bind(this)} />
             </div>
         )
     }

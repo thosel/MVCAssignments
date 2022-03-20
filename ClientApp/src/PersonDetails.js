@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 
 const PersonDetails = (props) => {
-  const [person, setPerson] = useState(props.currentPerson)
+  const [person, setPerson] = useState(props.personToView)
 
   useEffect(() => {
-    setPerson(props.currentPerson)
+    setPerson(props.personToView)
   }, [props])
 
-  return (
+  return (    
     <div>
       <h4>{person.name}</h4>
       <div><strong>Phone: </strong>{person.phone}</div>
@@ -25,7 +25,7 @@ const PersonDetails = (props) => {
         Delete
       </button>
       <button
-        onClick={() => props.setViewDetails(false)}
+        onClick={() => props.setArePersonDetailsVisible(false)}
         className="button muted-button"
       >
         Go back

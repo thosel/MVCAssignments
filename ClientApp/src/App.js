@@ -1,60 +1,54 @@
 import React, { useState, useEffect } from 'react'
 import PeopleTable from './tables/PeopleTable'
 import AddPersonForm from './forms/AddPersonForm'
-import PersonDetails from './forms/PersonDetails'
+import PersonDetails from './PersonDetails'
 import axios from 'axios'
 
 const App = () => {
-    const [people, setPeople] = useState([])
+    let [people, setPeople] = useState([])
+    const [arePersonDetailsVisible, setArePersonDetailsVisible] = useState(false)
+    const [personToView, setPersonToView] = useState({ id: null, name: '', phone: '' })
+    const viewPersonDetails = (person) => {
+        setArePersonDetailsVisible(true)
 
-    useEffect(() => {
-        fetch("https://localhost:5001/PeopleAPI/GetPeople")
-            .then(res => res.json())
-            .then((people) => {
-                for (let index = 0; index < people.length; index++) {
-                    people[index] = Object.keys(people[index]).reduce((accumulator, key) => {
-                        accumulator[key.toLowerCase()] = people[index][key];
-                        return accumulator;
-                    }, {});
-                }
-
-                return people
-            })
-            .then(
-                (result) => {
-                    setPeople(result)
-                },
-                (error) => {
-                    console.log(error)
-                }
-            )
-    }, [])
-
-    const [editing, setViewDetails] = useState(false)
-    const initialFormState = { id: null, name: '', phone: '' }
-    const [currentPerson, setCurrentPerson] = useState(initialFormState)
-    const editRow = (person) => {
-        setViewDetails(true)
-
-        setCurrentPerson({ id: person.id, name: person.name, phone: person.phone, city: person.city, country: person.country, languages: person.languages })
+        setPersonToView({
+            id: person.id,
+            name: person.name,
+            phone: person.phone,
+            city: person.city,
+            country: person.country,
+            languages: person.languages
+        })
     }
 
-    const addPerson = (person) => {
-        setPeople([...people, person])
+    useEffect(() => {
+        readPeople()
+    }, [])
+
+    const readPeople = async () => {
+        const response = await axios.get("https://localhost:5001/PeopleAPI/GetPeople")
+        if(response.status === 200){
+            let responseData = response.data
+            for (let index = 0; index < responseData.length; index++) {
+                responseData[index] = Object.keys(responseData[index]).reduce((accumulator, key) => {
+                    accumulator[key.toLowerCase()] = responseData[index][key];
+                    return accumulator;
+                }, {});
+            }
+            setPeople(responseData)
+        }            
+    }
+
+    const replacePeople = (newPeople) => {
+        setPeople(newPeople)
     }
 
     const deletePerson = async (id) => {
-        const res = await axios.get(`https://localhost:5001/PeopleAPI/DeletePerson/${id}`);
-                if (res.status === 204) {
-                    setPeople(people.filter((person) => person.id !== id))
-                    setViewDetails(false)
-                }
-    }
-
-    const updatePerson = (id, updatedPerson) => {
-        setViewDetails(false)
-
-        setPeople(people.map((person) => (person.id === id ? updatedPerson : person)))
+        const response = await axios.get(`https://localhost:5001/PeopleAPI/DeletePerson/${id}`);
+        if (response.status === 204) {
+            setPeople(people.filter((person) => person.id !== id))
+            setArePersonDetailsVisible(false)
+        }
     }
 
     return (
@@ -62,25 +56,25 @@ const App = () => {
             <h1>People</h1>
             <div className="flex-row">
                 <div className="flex-large">
-                    {editing ? (
+                    {arePersonDetailsVisible ? (
                         <div>
                             <h2>Person details</h2>
-                            <PersonDetails deletePerson={deletePerson}
-                                setViewDetails={setViewDetails}
-                                currentPerson={currentPerson}
-                                updatePerson={updatePerson}
+                            <PersonDetails
+                                deletePerson={deletePerson}
+                                setArePersonDetailsVisible={setArePersonDetailsVisible}
+                                personToView={personToView}
                             />
                         </div>
                     ) : (
                         <div>
                             <h2>Add person</h2>
-                            <AddPersonForm addPerson={addPerson} />
+                            <AddPersonForm readPeople={readPeople} />
                         </div>
                     )}
                 </div>
                 <div className="flex-large">
                     <h2>View people</h2>
-                    <PeopleTable people={people} editRow={editRow} deletePerson={deletePerson} />
+                    <PeopleTable people={people} viewPersonDetails={viewPersonDetails} deletePerson={deletePerson} replacePeople={replacePeople} />
                 </div>
             </div>
         </div>

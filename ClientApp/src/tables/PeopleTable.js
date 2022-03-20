@@ -1,66 +1,69 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 const PersonTable = (props) => {
-    const [currentSort, setCurrentSort] = useState("default")
-    
-    const onSortChange = () => {
-		let nextSort;
-
-		if (currentSort === 'down') nextSort = 'up';
-		else if (currentSort === 'up') nextSort = 'default';
-		else if (currentSort === 'default') nextSort = 'down';
-
-        setCurrentSort(nextSort)
-        console.log(currentSort)
-	};
-    const sortTypes = {
-        up: (a, b) => a.net_worth - b.net_worth,
-        down: (a, b) => b.net_worth - a.net_worth,
-        default: (a, b) => a
+    const [order, setOrder] = useState("ASC")
+    const sorting = (column) => {
+        if (order === "ASC") {
+            const sorted = [...props.people].sort((a, b) =>
+                a[column].toLowerCase() > b[column].toLowerCase() ? 1 : -1
+            )
+            props.replacePeople(sorted)
+            setOrder("DSC")
+        }
+        if (order === "DSC") {
+            const sorted = [...props.people].sort((a, b) =>
+                a[column].toLowerCase() < b[column].toLowerCase() ? 1 : -1
+            )
+            props.replacePeople(sorted)
+            setOrder("ASC")
+        }
     }
-    return (
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        <button onClick={onSortChange}>Name</button>
-                    </th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
 
-                {props.people.length > 0 ? (
-                    props.people.sort(sortTypes[currentSort]).map((person) => (
-                        <tr key={person.id}>
-                            <td>{person.name}</td>
-                            <td>{person.phone}</td>
-                            <td>
-                                <button
-                                    onClick={() => {
-                                        props.editRow(person)
-                                    }}
-                                    className="button muted-button"
-                                >
-                                    Details
-                                </button>
-                                <button
-                                    onClick={() => props.deletePerson(person.id)}
-                                    className="button muted-button"
-                                >
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))
-                ) : (
+    return (
+        <div className='container'>
+            <table className='table table-bordered'>
+                <thead>
                     <tr>
-                        <td colSpan={3}>No people</td>
+                        <th onClick={(() => sorting("name"))}>
+                            Name
+                        </th>
+                        <th>Phone</th>
+                        <th>Actions</th>
                     </tr>
-                )}
-            </tbody>
-        </table>)
+                </thead>
+                <tbody>
+                    {props.people.length > 0 ? (
+                        props.people.map((person) => (
+                            <tr key={person.id}>
+                                <td>{person.name}</td>
+                                <td>{person.phone}</td>
+                                <td>
+                                    <button
+                                        onClick={() => {
+                                            props.viewPersonDetails(person)
+                                        }}
+                                        className="button muted-button"
+                                    >
+                                        Details
+                                    </button>
+                                    <button
+                                        onClick={() => props.deletePerson(person.id)}
+                                        className="button muted-button"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={3}>No people</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    )
 
 }
 

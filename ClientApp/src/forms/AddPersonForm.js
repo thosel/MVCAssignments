@@ -4,52 +4,58 @@ import LanguagesDropdown from "./dropdowns/LanguagesDropdown"
 import axios from 'axios'
 
 const AddPersonForm = (props) => {
-    const initialFormState = { id: null, name: '', phone: '', cityid: "", languageIds: [] }
-    
-    const [person, setPerson] = useState(initialFormState)
-    let [cityid, setCityId] = useState("")
+    const newPersonState = { id: null, name: '', phone: '', cityId: "", languageIds: [] }
+
+    const [person, setPerson] = useState(newPersonState)
+    let [cityId, setCityId] = useState("")
     let [languageIds, setLanguageIds] = useState([])
-    /* let [citySelectClear, setCitySelectClear] = useState(null) */
+    let [validateInformation, SetValidateInformation] = useState("")
+    const [toggleSelectRefresh, setToggleSelectRefresh] = useState(false)
 
     const handleInputChange = (event) => {
         const { name, value } = event.target
-
         setPerson({ ...person, [name]: value })
     }
 
     const updateCityId = (newCityId) => {
-        setCityId(cityid = newCityId)
+        setCityId(cityId = newCityId)
     }
-    
+
     const updateLanguageIds = (newLanguageIds) => {
-        setLanguageIds(languageIds = newLanguageIds)
+        setLanguageIds(newLanguageIds)
     }
-    /* const updateCitySelectClear = (clearFunction) => {
-        setCitySelectClear(citySelectClear = clearFunction)
-        console.log(citySelectClear)
-    } */
 
     return (
         <form
             onSubmit={async event => {
                 event.preventDefault()
-                if (!person.name || !person.phone) return
-                let personToPost = {
-                    "name": person.name,
-                    "phone": person.phone,
-                    "cityid": cityid,
-                    "languageids": languageIds/* [1001, 1002] */
+                if (!person.name || cityId <= 0) {
+                    if (!person.name && cityId <= 0) {
+                        SetValidateInformation(validateInformation = "You must provide a name and a city!")
+                    } else if (cityId <= 0) {
+                        SetValidateInformation(validateInformation = "You must provide a city!")
+                    } else if (!person.name) {
+                        SetValidateInformation(validateInformation = "You must provide a name!")
+                    }
+                } else {
+                    let personToPost = {
+                        "name": person.name,
+                        "phone": person.phone,
+                        "cityid": cityId,
+                        "languageids": languageIds
+                    }
+                    const response = await axios.post('https://localhost:5001/PeopleAPI/CreatePerson', personToPost);
+                    if (response.status === 201) {
+                        person.id = response.data
+                        props.readPeople()
+                        setPerson(newPersonState)
+                        SetValidateInformation(validateInformation = "")
+                        setToggleSelectRefresh(toggleSelectRefresh === true ? false : true)
+                    }
                 }
-                const res = await axios.post('https://localhost:5001/PeopleAPI/CreatePerson', personToPost);
-                if (res.status === 201) {
-                    person.id = res.data
-                    props.addPerson(person)
-                    setPerson(initialFormState)
-                    
-                }
-
             }}
         >
+            <label className="text-danger">{validateInformation}</label>
             <label>Name</label>
             <input
                 type="text"
@@ -64,9 +70,9 @@ const AddPersonForm = (props) => {
                 onChange={handleInputChange}
             />
             <label>City</label>
-            <CitiesDropdown /* updateCitySelectClear={updateCitySelectClear} */ updateCityId={updateCityId}/>
+            <CitiesDropdown toggleSelectRefresh={toggleSelectRefresh} updateCityId={updateCityId} />
             <label>Languages</label>
-            <LanguagesDropdown updateLanguageIds={updateLanguageIds} />
+            <LanguagesDropdown toggleSelectRefresh={toggleSelectRefresh} updateLanguageIds={updateLanguageIds} />
             <button>Add new person</button>
         </form>
     )

@@ -8,31 +8,38 @@ export default class LanguagesDropdown extends Component {
         super(props)
         this.state = {
             selectOptions: [],
-            value: []
+            value: [],
+            selectedValues: []
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if (props.toggleSelectRefresh !== this.props.toggleSelectRefresh) {
+            this.setState({ selectedValues: [] })
         }
     }
 
     async getOptions() {
         const res = await axios.get('https://localhost:5001/PeopleAPI/GetLanguages')
-        const data = res.data
+        const responseData = res.data
 
-        const options = data.map(d => ({
-            "value": d.LanguageId,
-            "label": d.LanguageName
+        const options = responseData.map(data => ({
+            "value": data.LanguageId,
+            "label": data.LanguageName
         }))
 
         this.setState({ selectOptions: options })
 
     }
 
-    handleChange(e) {
-        this.setState({ value: e })
+    handleChange(event) {
+        this.setState({ value: event })
         const returnIds = []
-        e.forEach(language => {
+        event.forEach(language => {
             returnIds.push(language.value)
         });
         this.props.updateLanguageIds(returnIds)
-        console.log(returnIds)
+        this.setState({ selectedValues: event })
     }
 
     componentDidMount() {
@@ -43,7 +50,7 @@ export default class LanguagesDropdown extends Component {
     render() {
         return (
             <div>
-                <Select options={this.state.selectOptions} onChange={this.handleChange.bind(this)} isMulti />
+                <Select value={this.state.selectedValues} options={this.state.selectOptions} onChange={this.handleChange.bind(this)} isMulti />
             </div>
         )
     }
