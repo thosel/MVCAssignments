@@ -11,16 +11,70 @@ namespace MVCAssignments.Controllers
     {
         private readonly IPeopleService peopleService;
         private readonly ICitiesService citiesService;
-        private readonly ICountriesService countriesService;
         private readonly ILanguagesService languagesService;
 
-        public PeopleAPIController(IPeopleService peopleService, ICountriesService countriesService, ICitiesService citiesService, ILanguagesService languagesService)
+        public PeopleAPIController(IPeopleService peopleService, ICitiesService citiesService, ILanguagesService languagesService)
         {
             this.peopleService = peopleService;
             this.citiesService = citiesService;
-            this.countriesService = countriesService;
             this.languagesService = languagesService;
         }
+
+        #region Create
+
+        [HttpPost]
+        public IActionResult CreatePerson([FromBody] ClientAppCreatePerson clientAppCreatePerson)
+        {
+            if (string.IsNullOrEmpty(clientAppCreatePerson.Name))
+            {
+                return StatusCode(400);
+            }
+            if (clientAppCreatePerson.Phone == null)
+            {
+                return StatusCode(400);
+            }
+            if (this.citiesService.FindCity(clientAppCreatePerson.CityId) == null)
+            {
+                return StatusCode(400);
+            }
+            if (clientAppCreatePerson.LanguageIds == null)
+            {
+                return StatusCode(400);
+            }
+            else
+            {
+                foreach (var languageId in clientAppCreatePerson.LanguageIds)
+                {
+                    if (this.languagesService.FindLanguage(languageId) == null)
+                    {
+                        return StatusCode(400);
+                    }
+                }
+            }
+
+            Person person = new Person(
+                clientAppCreatePerson.Name,
+                clientAppCreatePerson.Phone,
+                this.citiesService.FindCity(clientAppCreatePerson.CityId)
+                );
+
+            int personId = this.peopleService.CreatePerson(person);
+
+
+            foreach (var languageId in clientAppCreatePerson.LanguageIds)
+            {
+                if (this.peopleService.FindPersonLanguage(personId, languageId) == null)
+                {
+                    this.peopleService.CreatePersonLanguage(personId, languageId);
+                }
+            }
+
+            return StatusCode(201, personId);
+        }
+
+        #endregion
+
+        #region Read
 
         [HttpGet]
         public string GetPeople()
@@ -89,55 +143,9 @@ namespace MVCAssignments.Controllers
             return JsonConvert.SerializeObject(languagesToReturn);
         }
 
-        [HttpPost]
-        public IActionResult CreatePerson([FromBody] ClientAppCreatePerson clientAppCreatePerson)
-        {
-            if (string.IsNullOrEmpty(clientAppCreatePerson.Name))
-            {
-                return StatusCode(400);
-            }
-            if (clientAppCreatePerson.Phone == null)
-            {
-                return StatusCode(400);
-            }
-            if(this.citiesService.FindCity(clientAppCreatePerson.CityId) == null)
-            {
-                return StatusCode(400);
-            }
-            if (clientAppCreatePerson.LanguageIds == null)
-            {
-                return StatusCode(400);
-            }
-            else
-            {
-                foreach (var languageId in clientAppCreatePerson.LanguageIds)
-                {
-                    if (this.languagesService.FindLanguage(languageId) == null)
-                    {
-                        return StatusCode(400);
-                    }
-                }
-            }
+        #endregion
 
-            Person person = new Person(
-                clientAppCreatePerson.Name,
-                clientAppCreatePerson.Phone,
-                this.citiesService.FindCity(clientAppCreatePerson.CityId)
-                );
-            
-            int personId = this.peopleService.CreatePerson(person);
-
-
-            foreach (var languageId in clientAppCreatePerson.LanguageIds)
-            {
-                if (this.peopleService.FindPersonLanguage(personId, languageId) == null)
-                {
-                    this.peopleService.CreatePersonLanguage(personId, languageId);
-                }
-            }
-
-            return StatusCode(201, personId);
-        }
+        #region Delete
 
         [HttpGet]
         public IActionResult DeletePerson(int id)
@@ -150,5 +158,7 @@ namespace MVCAssignments.Controllers
 
             return StatusCode(400);
         }
+
+        #endregion
     }
 }
